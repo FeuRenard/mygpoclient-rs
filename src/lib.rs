@@ -1,4 +1,5 @@
 #![deny(
+    clippy::all,
     warnings,
     future_incompatible,
     nonstandard_style,
