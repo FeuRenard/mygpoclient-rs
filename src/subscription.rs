@@ -50,7 +50,7 @@ pub fn get(username: &str, password: &str, deviceid: &str) -> Result<Vec<String>
 }
 
 pub fn put(
-    subscriptions: &Vec<String>,
+    subscriptions: &[String],
     username: &str,
     password: &str,
     deviceid: &str,
