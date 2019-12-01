@@ -1,8 +1,8 @@
 use crate::Error;
 use serde::{Deserialize, Serialize};
 
-const PACKAGE_NAME: &'static str = env!("CARGO_PKG_NAME");
-const PACKAGE_VERSION: &'static str = env!("CARGO_PKG_VERSION");
+const PACKAGE_NAME: &str = env!("CARGO_PKG_NAME");
+const PACKAGE_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Subscription {
