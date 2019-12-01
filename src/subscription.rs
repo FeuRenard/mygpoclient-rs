@@ -5,6 +5,7 @@ use serde::{de::DeserializeOwned, Deserialize, Serialize};
 const PACKAGE_NAME: &str = env!("CARGO_PKG_NAME");
 const PACKAGE_VERSION: &str = env!("CARGO_PKG_VERSION");
 
+/// A Subscription as returned by [`Subscription::get_all`]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Subscription {
     pub url: String,
@@ -19,6 +20,10 @@ pub struct Subscription {
 }
 
 impl Subscription {
+    /// Get All Subscriptions
+    ///
+    /// # See also
+    /// https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-all-subscriptions
     pub fn get_all(username: &str, password: &str) -> Result<Vec<Subscription>, Error> {
         get_internal(
             &format!("https://gpodder.net/subscriptions/{}.json", username),
@@ -28,6 +33,10 @@ impl Subscription {
     }
 }
 
+/// Get Subscriptions of Device
+///
+/// # See also
+/// https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-subscriptions-of-device
 pub fn get(username: &str, password: &str, deviceid: &str) -> Result<Vec<String>, Error> {
     get_internal(
         &format!(
@@ -39,6 +48,10 @@ pub fn get(username: &str, password: &str, deviceid: &str) -> Result<Vec<String>
     )
 }
 
+/// Upload Subscriptions of Device
+///
+/// # See also
+/// https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#upload-subscriptions-of-device
 pub fn put(
     subscriptions: &[String],
     username: &str,
