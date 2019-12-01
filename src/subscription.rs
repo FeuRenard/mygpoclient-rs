@@ -1,5 +1,6 @@
 use crate::Error;
-use serde::{Deserialize, Serialize};
+use reqwest::IntoUrl;
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 const PACKAGE_NAME: &str = env!("CARGO_PKG_NAME");
 const PACKAGE_VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -19,34 +20,23 @@ pub struct Subscription {
 
 impl Subscription {
     pub fn get_all(username: &str, password: &str) -> Result<Vec<Subscription>, Error> {
-        Ok(reqwest::Client::new()
-            .get(&format!(
-                "https://gpodder.net/subscriptions/{}.json",
-                username
-            ))
-            .basic_auth(username, Some(password))
-            .header(
-                reqwest::header::USER_AGENT,
-                &format!("{}/{}", PACKAGE_NAME, PACKAGE_VERSION),
-            )
-            .send()? // TODO handle response?
-            .json()?)
+        get_internal(
+            &format!("https://gpodder.net/subscriptions/{}.json", username),
+            username,
+            password,
+        )
     }
 }
 
 pub fn get(username: &str, password: &str, deviceid: &str) -> Result<Vec<String>, Error> {
-    Ok(reqwest::Client::new()
-        .get(&format!(
+    get_internal(
+        &format!(
             "https://gpodder.net/subscriptions/{}/{}.json",
             username, deviceid
-        ))
-        .basic_auth(username, Some(password))
-        .header(
-            reqwest::header::USER_AGENT,
-            &format!("{}/{}", PACKAGE_NAME, PACKAGE_VERSION),
-        )
-        .send()? // TODO handle response?
-        .json()?)
+        ),
+        username,
+        password,
+    )
 }
 
 pub fn put(
@@ -68,6 +58,22 @@ pub fn put(
         .json(subscriptions)
         .send()?; // TODO handle response?
     Ok(())
+}
+
+fn get_internal<U: IntoUrl, T: DeserializeOwned>(
+    url: U,
+    username: &str,
+    password: &str,
+) -> Result<T, Error> {
+    Ok(reqwest::Client::new()
+        .get(url)
+        .basic_auth(username, Some(password))
+        .header(
+            reqwest::header::USER_AGENT,
+            &format!("{}/{}", PACKAGE_NAME, PACKAGE_VERSION),
+        )
+        .send()?
+        .json()?) // TODO handle response?
 }
 
 // TODO unit tests
