@@ -1,4 +1,7 @@
 # libmygpo-rs
+
+[![Build Status](https://travis-ci.org/FeuRenard/libmygpo-rs.svg?branch=master)](https://travis-ci.org/FeuRenard/libmygpo-rs)
+
 Rust client library for [gpodder.net](https://gpodder.net/)
 
 ## Building
@@ -6,8 +9,8 @@ Rust client library for [gpodder.net](https://gpodder.net/)
 2. Run `cargo build`
 
 ## Testing
-1. Set environment variable `export GPODDER_NET_USERNAME="<username>"`
-2. Set environment variable `export GPODDER_NET_PASSWORD="<password>"`
+1. Set environment variable `export GPODDER_NET_USERNAME=<username>`
+2. Set environment variable `export GPODDER_NET_PASSWORD=<password>`
 3. Run `cargo test`
 
 ## Install git hooks
