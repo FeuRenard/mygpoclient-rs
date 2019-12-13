@@ -2,7 +2,7 @@ extern crate libmygpo_rs;
 
 use std::env;
 
-use libmygpo_rs::subscription;
+use libmygpo_rs::Client;
 use libmygpo_rs::Error;
 
 const DEVICEID: &'static str = "randomdeviceid"; // TODO
@@ -13,20 +13,14 @@ fn test_subscription() -> Result<(), Error> {
     let username = env::var("GPODDER_NET_USERNAME").unwrap();
     let password = env::var("GPODDER_NET_PASSWORD").unwrap();
 
-    let subscriptions = subscription::get(username.as_str(), password.as_str(), DEVICEID)?;
+    let client = Client::new(&username, &password);
+
+    let subscriptions = client.get_subscriptions(DEVICEID)?;
 
     if subscriptions.contains(&get_dummy_url()) {
-        add_and_assert_contains(
-            remove_and_assert_gone(subscriptions, username.as_str(), password.as_str())?,
-            username.as_str(),
-            password.as_str(),
-        )?;
+        add_and_assert_contains(remove_and_assert_gone(subscriptions, &client)?, &client)?;
     } else {
-        remove_and_assert_gone(
-            add_and_assert_contains(subscriptions, username.as_str(), password.as_str())?,
-            username.as_str(),
-            password.as_str(),
-        )?;
+        remove_and_assert_gone(add_and_assert_contains(subscriptions, &client)?, &client)?;
     }
 
     Ok(())
@@ -34,18 +28,18 @@ fn test_subscription() -> Result<(), Error> {
 
 fn add_and_assert_contains(
     mut subscriptions: Vec<String>,
-    username: &str,
-    password: &str,
+    client: &Client,
 ) -> Result<Vec<String>, Error> {
     subscriptions.push(get_dummy_url());
-    subscription::put(&subscriptions, username, password, DEVICEID)?;
+    client.put_subscriptions(&subscriptions, DEVICEID)?;
 
-    let subscriptions_after_addition = subscription::get(username, password, DEVICEID)?;
+    let subscriptions_after_addition = client.get_subscriptions(DEVICEID)?;
     assert!(subscriptions_after_addition.contains(&get_dummy_url()));
 
     assert_eq!(
         1,
-        subscription::Subscription::get_all(username, password)?
+        client
+            .get_all_subscriptions()?
             .iter()
             .filter(|s| s.url == get_dummy_url())
             .count()
@@ -56,26 +50,23 @@ fn add_and_assert_contains(
 
 fn remove_and_assert_gone(
     subscriptions: Vec<String>,
-    username: &str,
-    password: &str,
+    client: &Client,
 ) -> Result<Vec<String>, Error> {
-    subscription::put(
+    client.put_subscriptions(
         subscriptions
             .iter()
             .filter(|&s| s != DUMMY_PODCAST_URL)
             .cloned()
             .collect::<Vec<String>>()
             .as_ref(),
-        username,
-        password,
         DEVICEID,
     )?;
 
-    let subscriptions_after_removal = subscription::get(username, password, DEVICEID)?;
+    let subscriptions_after_removal = client.get_subscriptions(DEVICEID)?;
     assert!(!subscriptions_after_removal.contains(&get_dummy_url()));
     Ok(subscriptions_after_removal)
 }
 
 fn get_dummy_url() -> String {
-    String::from(DUMMY_PODCAST_URL)
+    DUMMY_PODCAST_URL.to_owned()
 }

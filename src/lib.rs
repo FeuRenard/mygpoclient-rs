@@ -20,7 +20,9 @@
     unused_qualifications
 )]
 
+pub use client::Client;
 pub use error::Error;
 
+mod client;
 mod error;
-pub mod subscription;
+mod subscription;
