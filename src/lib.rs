@@ -26,3 +26,4 @@ pub use error::Error;
 mod client;
 mod error;
 mod subscription;
+mod suggestion;
