@@ -3,7 +3,7 @@ use crate::Error;
 use serde::{Deserialize, Serialize};
 
 /// A Subscription as returned by [`Client::get_all_subscriptions`]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize)]
 pub struct Subscription {
     pub url: String,
     pub title: String,
