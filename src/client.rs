@@ -30,6 +30,22 @@ impl Client {
             .send()
     }
 
+    pub(crate) fn get_with_query<U: reqwest::IntoUrl, T: serde::Serialize + ?Sized>(
+        &self,
+        url: U,
+        query: &T,
+    ) -> Result<reqwest::Response, reqwest::Error> {
+        self.client
+            .get(url)
+            .basic_auth(&self.username, Some(&self.password))
+            .header(
+                reqwest::header::USER_AGENT,
+                &format!("{}/{}", PACKAGE_NAME, PACKAGE_VERSION),
+            )
+            .query(&query)
+            .send()
+    }
+
     pub(crate) fn put<T: serde::Serialize + ?Sized, U: reqwest::IntoUrl>(
         &self,
         url: U,
@@ -37,6 +53,22 @@ impl Client {
     ) -> Result<reqwest::Response, reqwest::Error> {
         self.client
             .put(url)
+            .basic_auth(&self.username, Some(&self.password))
+            .header(
+                reqwest::header::USER_AGENT,
+                &format!("{}/{}", PACKAGE_NAME, PACKAGE_VERSION),
+            )
+            .json(json)
+            .send()
+    }
+
+    pub(crate) fn post<T: serde::Serialize + ?Sized, U: reqwest::IntoUrl>(
+        &self,
+        url: U,
+        json: &T,
+    ) -> Result<reqwest::Response, reqwest::Error> {
+        self.client
+            .post(url)
             .basic_auth(&self.username, Some(&self.password))
             .header(
                 reqwest::header::USER_AGENT,

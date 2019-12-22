@@ -85,3 +85,77 @@ fn test_suggestion() -> Result<(), Error> {
 
     Ok(())
 }
+
+#[test]
+fn test_subscription_changes() -> Result<(), Error> {
+    let username = env::var("GPODDER_NET_USERNAME").unwrap();
+    let password = env::var("GPODDER_NET_PASSWORD").unwrap();
+
+    let client = Client::new(&username, &password);
+
+    let subscriptions = client.get_subscriptions(DEVICEID)?;
+
+    let is_remove_first = subscriptions.contains(&get_dummy_url());
+    let last_timestamp = if is_remove_first {
+        remove_changes(&client)?;
+        add_changes(&client)?
+    } else {
+        add_changes(&client)?;
+        remove_changes(&client)?
+    };
+
+    let changes = client.get_subscription_changes(DEVICEID, last_timestamp)?;
+
+    let add_or_remove_empty = if is_remove_first {
+        &changes.remove
+    } else {
+        &changes.add
+    };
+    let add_or_remove_one = if is_remove_first {
+        &changes.add
+    } else {
+        &changes.remove
+    };
+
+    assert!(add_or_remove_empty.is_empty());
+    assert_eq!(
+        1,
+        add_or_remove_one
+            .iter()
+            .filter(|&url| *url == get_dummy_url())
+            .count()
+    );
+
+    Ok(())
+}
+
+fn add_changes(client: &Client) -> Result<u64, Error> {
+    let dummy_podcast_url_with_spaces = format!("{}  ", DUMMY_PODCAST_URL);
+    let add = vec![dummy_podcast_url_with_spaces.clone()];
+    let remove = vec![];
+
+    let response = client.upload_subscription_changes(&add, &remove, DEVICEID)?;
+
+    assert_eq!(
+        1,
+        response
+            .update_urls
+            .iter()
+            .filter(|&update_url| *update_url
+                == (dummy_podcast_url_with_spaces.clone(), get_dummy_url()))
+            .count()
+    );
+
+    Ok(response.timestamp)
+}
+
+fn remove_changes(client: &Client) -> Result<u64, Error> {
+    let add = vec![];
+    let remove = vec![get_dummy_url()];
+
+    let response = client.upload_subscription_changes(&add, &remove, DEVICEID)?;
+
+    assert!(response.update_urls.is_empty());
+
+    Ok(response.timestamp)
+}

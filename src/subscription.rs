@@ -16,6 +16,25 @@ pub struct Subscription {
     pub mygpo_link: String,
 }
 
+#[derive(Serialize)]
+pub(crate) struct UploadSubscriptionChangesRequest {
+    pub(crate) add: Vec<String>,
+    pub(crate) remove: Vec<String>,
+}
+
+#[derive(Deserialize)]
+pub struct UploadSubscriptionChangesResponse {
+    pub timestamp: u64,
+    pub update_urls: Vec<(String, String)>,
+}
+
+#[derive(Deserialize)]
+pub struct GetSubscriptionChangesResponse {
+    pub add: Vec<String>,
+    pub remove: Vec<String>,
+    pub timestamp: u64,
+}
+
 impl Client {
     /// Get All Subscriptions
     ///
@@ -57,6 +76,56 @@ impl Client {
         )?; // TODO handle response?
         Ok(())
     }
-}
 
-// TODO unit tests
+    /// Upload Subscription Changes
+    ///
+    /// # Parameters
+    ///
+    /// - `add`: A slice of subscription URLs as String, that should be added
+    /// - `remove`: A slice of subscription URLs as String, that should be removed
+    ///
+    /// # See also
+    ///
+    /// - [API documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#upload-subscription-changes)
+    pub fn upload_subscription_changes(
+        &self,
+        add: &[String],
+        remove: &[String],
+        deviceid: &str,
+    ) -> Result<UploadSubscriptionChangesResponse, Error> {
+        let input = UploadSubscriptionChangesRequest {
+            add: add.to_owned(),
+            remove: remove.to_owned(),
+        };
+        Ok(self
+            .post(
+                &format!(
+                    "https://gpodder.net/api/2/subscriptions/{}/{}.json",
+                    self.username, deviceid
+                ),
+                &input,
+            )?
+            .json()?)
+    }
+
+    /// Get Subscription Changes
+    ///
+    /// # See also
+    ///
+    /// - [API documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-subscription-changes)
+    pub fn get_subscription_changes(
+        &self,
+        deviceid: &str,
+        timestamp: u64,
+    ) -> Result<GetSubscriptionChangesResponse, Error> {
+        Ok(self
+            .get_with_query(
+                &format!(
+                    "https://gpodder.net/api/2/subscriptions/{}/{}.json",
+                    self.username, deviceid
+                ),
+                &[("since", timestamp)],
+            )?
+            .json()?)
+    }
+}
