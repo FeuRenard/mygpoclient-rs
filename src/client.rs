@@ -20,15 +20,15 @@ impl Client {
         &self,
         url: U,
     ) -> Result<reqwest::Response, reqwest::Error> {
-        let empty_slice: &[&String] = &[];
+        let empty_slice: &[&(&String, &String)] = &[];
         self.get_with_query(url, empty_slice)
     }
 
     // TODO force key-value pairs for query parameters
-    pub(crate) fn get_with_query<U: reqwest::IntoUrl, T: serde::Serialize + ?Sized>(
+    pub(crate) fn get_with_query<U: reqwest::IntoUrl, T: ToString + ?Sized>(
         &self,
         url: U,
-        query_parameters: &[&T],
+        query_parameters: &[&(&T, &T)],
     ) -> Result<reqwest::Response, reqwest::Error> {
         let mut request_builder = self
             .client
@@ -39,8 +39,8 @@ impl Client {
                 &format!("{}/{}", PACKAGE_NAME, PACKAGE_VERSION),
             );
 
-        for query_parameter in query_parameters {
-            request_builder = request_builder.query(query_parameter);
+        for (key, value) in query_parameters {
+            request_builder = request_builder.query(&(key.to_string(), value.to_string()));
         }
 
         request_builder.send()
