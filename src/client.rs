@@ -20,30 +20,30 @@ impl Client {
         &self,
         url: U,
     ) -> Result<reqwest::Response, reqwest::Error> {
-        self.client
-            .get(url)
-            .basic_auth(&self.username, Some(&self.password))
-            .header(
-                reqwest::header::USER_AGENT,
-                &format!("{}/{}", PACKAGE_NAME, PACKAGE_VERSION),
-            )
-            .send()
+        let empty_slice: &[&String] = &[];
+        self.get_with_query(url, empty_slice)
     }
 
+    // TODO force key-value pairs for query parameters
     pub(crate) fn get_with_query<U: reqwest::IntoUrl, T: serde::Serialize + ?Sized>(
         &self,
         url: U,
-        query: &T,
+        query_parameters: &[&T],
     ) -> Result<reqwest::Response, reqwest::Error> {
-        self.client
+        let mut request_builder = self
+            .client
             .get(url)
             .basic_auth(&self.username, Some(&self.password))
             .header(
                 reqwest::header::USER_AGENT,
                 &format!("{}/{}", PACKAGE_NAME, PACKAGE_VERSION),
-            )
-            .query(&query)
-            .send()
+            );
+
+        for query_parameter in query_parameters {
+            request_builder = request_builder.query(query_parameter);
+        }
+
+        request_builder.send()
     }
 
     pub(crate) fn put<T: serde::Serialize + ?Sized, U: reqwest::IntoUrl>(

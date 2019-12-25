@@ -124,7 +124,7 @@ impl Client {
                     "https://gpodder.net/api/2/subscriptions/{}/{}.json",
                     self.username, deviceid
                 ),
-                &[("since", timestamp)],
+                &[&("since", timestamp)],
             )?
             .json()?)
     }
