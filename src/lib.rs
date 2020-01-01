@@ -23,7 +23,7 @@
 pub use client::Client;
 pub use error::Error;
 
-mod client;
+pub mod client;
 mod error;
-mod subscription;
-mod suggestion;
+pub mod subscription;
+pub mod suggestion;

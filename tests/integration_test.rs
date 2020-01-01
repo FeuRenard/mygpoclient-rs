@@ -72,21 +72,6 @@ fn get_dummy_url() -> String {
 }
 
 #[test]
-fn test_suggestion() -> Result<(), Error> {
-    let username = env::var("GPODDER_NET_USERNAME").unwrap();
-    let password = env::var("GPODDER_NET_PASSWORD").unwrap();
-
-    let client = Client::new(&username, &password);
-
-    let max_number_of_suggestions = 3;
-    let suggestions = client.get_suggestions(max_number_of_suggestions)?;
-
-    assert!(suggestions.len() <= max_number_of_suggestions as usize);
-
-    Ok(())
-}
-
-#[test]
 fn test_subscription_changes() -> Result<(), Error> {
     let username = env::var("GPODDER_NET_USERNAME").unwrap();
     let password = env::var("GPODDER_NET_PASSWORD").unwrap();
