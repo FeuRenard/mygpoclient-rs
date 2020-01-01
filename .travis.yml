@@ -1,9 +1,12 @@
 language: rust
-rust:
-- stable
-- beta
-- nightly
 jobs:
+  include:
+    - stage: rust-stable
+      rust: stable
+    - stage: rust-beta
+      rust: beta
+    - stage: rust-nightly
+      rust: nightly
   allow_failures:
   - rust: nightly
   fast_finish: true
