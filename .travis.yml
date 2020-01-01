@@ -1,4 +1,6 @@
 language: rust
+script:
+  - cargo test -- --test-threads=1
 jobs:
   include:
     - stage: rust-stable
