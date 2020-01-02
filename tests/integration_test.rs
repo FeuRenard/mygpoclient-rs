@@ -3,7 +3,7 @@ extern crate libmygpo_rs;
 use std::env;
 
 use libmygpo_rs::subscription::{AllSubscriptions, SubscriptionChanges, SubscriptionsOfDevice};
-use libmygpo_rs::AuthenticatedClient;
+use libmygpo_rs::DeviceClient;
 use libmygpo_rs::Error;
 
 const DEVICEID: &'static str = "randomdeviceid"; // TODO
@@ -14,9 +14,9 @@ fn test_subscription() -> Result<(), Error> {
     let username = env::var("GPODDER_NET_USERNAME").unwrap();
     let password = env::var("GPODDER_NET_PASSWORD").unwrap();
 
-    let client = AuthenticatedClient::new(&username, &password);
+    let client = DeviceClient::new(&username, &password, DEVICEID);
 
-    let subscriptions = client.get_subscriptions_of_device(DEVICEID)?;
+    let subscriptions = client.get_subscriptions_of_device()?;
 
     if subscriptions.contains(&get_dummy_url()) {
         add_and_assert_contains(remove_and_assert_gone(subscriptions, &client)?, &client)?;
@@ -29,12 +29,12 @@ fn test_subscription() -> Result<(), Error> {
 
 fn add_and_assert_contains(
     mut subscriptions: Vec<String>,
-    client: &AuthenticatedClient,
+    client: &DeviceClient,
 ) -> Result<Vec<String>, Error> {
     subscriptions.push(get_dummy_url());
-    client.upload_subscriptions_of_device(&subscriptions, DEVICEID)?;
+    client.upload_subscriptions_of_device(&subscriptions)?;
 
-    let subscriptions_after_addition = client.get_subscriptions_of_device(DEVICEID)?;
+    let subscriptions_after_addition = client.get_subscriptions_of_device()?;
     assert!(subscriptions_after_addition.contains(&get_dummy_url()));
 
     assert_eq!(
@@ -51,7 +51,7 @@ fn add_and_assert_contains(
 
 fn remove_and_assert_gone(
     subscriptions: Vec<String>,
-    client: &AuthenticatedClient,
+    client: &DeviceClient,
 ) -> Result<Vec<String>, Error> {
     client.upload_subscriptions_of_device(
         subscriptions
@@ -60,10 +60,9 @@ fn remove_and_assert_gone(
             .cloned()
             .collect::<Vec<String>>()
             .as_ref(),
-        DEVICEID,
     )?;
 
-    let subscriptions_after_removal = client.get_subscriptions_of_device(DEVICEID)?;
+    let subscriptions_after_removal = client.get_subscriptions_of_device()?;
     assert!(!subscriptions_after_removal.contains(&get_dummy_url()));
     Ok(subscriptions_after_removal)
 }
@@ -77,9 +76,9 @@ fn test_subscription_changes() -> Result<(), Error> {
     let username = env::var("GPODDER_NET_USERNAME").unwrap();
     let password = env::var("GPODDER_NET_PASSWORD").unwrap();
 
-    let client = AuthenticatedClient::new(&username, &password);
+    let client = DeviceClient::new(&username, &password, DEVICEID);
 
-    let subscriptions = client.get_subscriptions_of_device(DEVICEID)?;
+    let subscriptions = client.get_subscriptions_of_device()?;
 
     let is_remove_first = subscriptions.contains(&get_dummy_url());
     let last_timestamp = if is_remove_first {
@@ -90,7 +89,7 @@ fn test_subscription_changes() -> Result<(), Error> {
         remove_changes(&client)?
     };
 
-    let changes = client.get_subscription_changes(DEVICEID, last_timestamp)?;
+    let changes = client.get_subscription_changes(last_timestamp)?;
 
     let add_or_remove_empty = if is_remove_first {
         &changes.remove
@@ -115,12 +114,12 @@ fn test_subscription_changes() -> Result<(), Error> {
     Ok(())
 }
 
-fn add_changes(client: &AuthenticatedClient) -> Result<u64, Error> {
+fn add_changes(client: &DeviceClient) -> Result<u64, Error> {
     let dummy_podcast_url_with_spaces = format!("{}  ", DUMMY_PODCAST_URL);
     let add = vec![dummy_podcast_url_with_spaces.clone()];
     let remove = vec![];
 
-    let response = client.upload_subscription_changes(&add, &remove, DEVICEID)?;
+    let response = client.upload_subscription_changes(&add, &remove)?;
 
     assert_eq!(
         1,
@@ -135,11 +134,11 @@ fn add_changes(client: &AuthenticatedClient) -> Result<u64, Error> {
     Ok(response.timestamp)
 }
 
-fn remove_changes(client: &AuthenticatedClient) -> Result<u64, Error> {
+fn remove_changes(client: &DeviceClient) -> Result<u64, Error> {
     let add = vec![];
     let remove = vec![get_dummy_url()];
 
-    let response = client.upload_subscription_changes(&add, &remove, DEVICEID)?;
+    let response = client.upload_subscription_changes(&add, &remove)?;
 
     assert!(response.update_urls.is_empty());
 

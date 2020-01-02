@@ -1,5 +1,5 @@
-use crate::AuthenticatedClient;
 use crate::Error;
+use crate::{AuthenticatedClient, DeviceClient};
 use serde::{Deserialize, Serialize};
 
 /// A Subscription as returned by [`Client::get_all_subscriptions`]
@@ -51,17 +51,13 @@ pub trait SubscriptionsOfDevice {
     ///
     /// # See also
     /// https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-subscriptions-of-device
-    fn get_subscriptions_of_device(&self, deviceid: &str) -> Result<Vec<String>, Error>;
+    fn get_subscriptions_of_device(&self) -> Result<Vec<String>, Error>;
 
     /// Upload Subscriptions of Device
     ///
     /// # See also
     /// https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#upload-subscriptions-of-device
-    fn upload_subscriptions_of_device(
-        &self,
-        subscriptions: &[String],
-        deviceid: &str,
-    ) -> Result<(), Error>;
+    fn upload_subscriptions_of_device(&self, subscriptions: &[String]) -> Result<(), Error>;
 }
 
 pub trait SubscriptionChanges {
@@ -79,7 +75,6 @@ pub trait SubscriptionChanges {
         &self,
         add: &[String],
         remove: &[String],
-        deviceid: &str,
     ) -> Result<UploadSubscriptionChangesResponse, Error>;
 
     /// Get Subscription Changes
@@ -89,7 +84,6 @@ pub trait SubscriptionChanges {
     /// - [API documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-subscription-changes)
     fn get_subscription_changes(
         &self,
-        deviceid: &str,
         timestamp: u64,
     ) -> Result<GetSubscriptionChangesResponse, Error>;
 }
@@ -105,25 +99,27 @@ impl AllSubscriptions for AuthenticatedClient {
     }
 }
 
-impl SubscriptionsOfDevice for AuthenticatedClient {
-    fn get_subscriptions_of_device(&self, deviceid: &str) -> Result<Vec<String>, Error> {
+impl AllSubscriptions for DeviceClient {
+    fn get_all_subscriptions(&self) -> Result<Vec<Subscription>, Error> {
+        self.authenticated_client.get_all_subscriptions()
+    }
+}
+
+impl SubscriptionsOfDevice for DeviceClient {
+    fn get_subscriptions_of_device(&self) -> Result<Vec<String>, Error> {
         Ok(self
             .get(&format!(
                 "https://gpodder.net/subscriptions/{}/{}.json",
-                self.username, deviceid
+                self.authenticated_client.username, self.device_id
             ))?
             .json()?) // TODO handle response?
     }
 
-    fn upload_subscriptions_of_device(
-        &self,
-        subscriptions: &[String],
-        deviceid: &str,
-    ) -> Result<(), Error> {
+    fn upload_subscriptions_of_device(&self, subscriptions: &[String]) -> Result<(), Error> {
         self.put(
             &format!(
                 "https://gpodder.net/subscriptions/{}/{}.json",
-                self.username, deviceid
+                self.authenticated_client.username, self.device_id
             ),
             subscriptions,
         )?; // TODO handle response?
@@ -131,12 +127,11 @@ impl SubscriptionsOfDevice for AuthenticatedClient {
     }
 }
 
-impl SubscriptionChanges for AuthenticatedClient {
+impl SubscriptionChanges for DeviceClient {
     fn upload_subscription_changes(
         &self,
         add: &[String],
         remove: &[String],
-        deviceid: &str,
     ) -> Result<UploadSubscriptionChangesResponse, Error> {
         let input = UploadSubscriptionChangesRequest {
             add: add.to_owned(),
@@ -146,7 +141,7 @@ impl SubscriptionChanges for AuthenticatedClient {
             .post(
                 &format!(
                     "https://gpodder.net/api/2/subscriptions/{}/{}.json",
-                    self.username, deviceid
+                    self.authenticated_client.username, self.device_id
                 ),
                 &input,
             )?
@@ -155,14 +150,13 @@ impl SubscriptionChanges for AuthenticatedClient {
 
     fn get_subscription_changes(
         &self,
-        deviceid: &str,
         timestamp: u64,
     ) -> Result<GetSubscriptionChangesResponse, Error> {
         Ok(self
             .get_with_query(
                 &format!(
                     "https://gpodder.net/api/2/subscriptions/{}/{}.json",
-                    self.username, deviceid
+                    self.authenticated_client.username, self.device_id
                 ),
                 &[&("since", timestamp)],
             )?
