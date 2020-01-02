@@ -34,7 +34,7 @@ pub trait Suggestions {
     /// let client = Client::new(&username, &password);
     ///
     /// let max_results = 3;
-    /// let suggestions = client.get_suggestions(max_results)?;
+    /// let suggestions = client.retrieve_suggested_podcasts(max_results)?;
     ///
     /// assert!(suggestions.len() <= max_results as usize);
     ///
@@ -44,11 +44,11 @@ pub trait Suggestions {
     /// # See also
     ///
     /// - [Suggestions API: Retrieve Suggested Podcasts](https://gpoddernet.readthedocs.io/en/latest/api/reference/suggestions.html#retrieve-suggested-podcasts)
-    fn get_suggestions(&self, max_results: u8) -> Result<Vec<Suggestion>, Error>;
+    fn retrieve_suggested_podcasts(&self, max_results: u8) -> Result<Vec<Suggestion>, Error>;
 }
 
 impl Suggestions for Client {
-    fn get_suggestions(&self, max_results: u8) -> Result<Vec<Suggestion>, Error> {
+    fn retrieve_suggested_podcasts(&self, max_results: u8) -> Result<Vec<Suggestion>, Error> {
         Ok(self
             .get(&format!(
                 "https://gpodder.net/suggestions/{}.json",
