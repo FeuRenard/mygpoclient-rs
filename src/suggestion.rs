@@ -15,11 +15,8 @@ pub struct Suggestion {
     pub logo_url: Option<String>,
 }
 
+/// [Suggestions API](https://gpoddernet.readthedocs.io/en/latest/api/reference/suggestions.html)
 pub trait Suggestions {
-    fn get_suggestions(&self, max_results: u8) -> Result<Vec<Suggestion>, Error>;
-}
-
-impl Suggestions for Client {
     /// Retrieve Suggested Podcasts
     ///
     /// # Arguments
@@ -47,6 +44,10 @@ impl Suggestions for Client {
     /// # See also
     ///
     /// - [Suggestions API: Retrieve Suggested Podcasts](https://gpoddernet.readthedocs.io/en/latest/api/reference/suggestions.html#retrieve-suggested-podcasts)
+    fn get_suggestions(&self, max_results: u8) -> Result<Vec<Suggestion>, Error>;
+}
+
+impl Suggestions for Client {
     fn get_suggestions(&self, max_results: u8) -> Result<Vec<Suggestion>, Error> {
         Ok(self
             .get(&format!(
