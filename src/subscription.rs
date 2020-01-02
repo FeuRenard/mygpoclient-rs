@@ -41,6 +41,13 @@ pub trait Subscriptions: AllSubscriptions + SubscriptionsOfDevice + Subscription
 pub trait AllSubscriptions {
     /// Get All Subscriptions
     ///
+    /// # Returns
+    ///
+    /// A `Result` which is:
+    ///
+    /// - `Ok`: A `Vec<Subscription>` of all subscriptions
+    /// - `Err`: A wrapped JSON or network error
+    ///
     /// # Examples
     ///
     /// ```
