@@ -51,7 +51,7 @@ pub trait SubscriptionsOfDevice {
     ///
     /// # See also
     /// https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-subscriptions-of-device
-    fn get_subscriptions(&self, deviceid: &str) -> Result<Vec<String>, Error>;
+    fn get_subscriptions_of_device(&self, deviceid: &str) -> Result<Vec<String>, Error>;
 
     /// Upload Subscriptions of Device
     ///
@@ -106,7 +106,7 @@ impl AllSubscriptions for Client {
 }
 
 impl SubscriptionsOfDevice for Client {
-    fn get_subscriptions(&self, deviceid: &str) -> Result<Vec<String>, Error> {
+    fn get_subscriptions_of_device(&self, deviceid: &str) -> Result<Vec<String>, Error> {
         Ok(self
             .get(&format!(
                 "https://gpodder.net/subscriptions/{}/{}.json",

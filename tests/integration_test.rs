@@ -16,7 +16,7 @@ fn test_subscription() -> Result<(), Error> {
 
     let client = Client::new(&username, &password);
 
-    let subscriptions = client.get_subscriptions(DEVICEID)?;
+    let subscriptions = client.get_subscriptions_of_device(DEVICEID)?;
 
     if subscriptions.contains(&get_dummy_url()) {
         add_and_assert_contains(remove_and_assert_gone(subscriptions, &client)?, &client)?;
@@ -34,7 +34,7 @@ fn add_and_assert_contains(
     subscriptions.push(get_dummy_url());
     client.upload_subscriptions_of_device(&subscriptions, DEVICEID)?;
 
-    let subscriptions_after_addition = client.get_subscriptions(DEVICEID)?;
+    let subscriptions_after_addition = client.get_subscriptions_of_device(DEVICEID)?;
     assert!(subscriptions_after_addition.contains(&get_dummy_url()));
 
     assert_eq!(
@@ -63,7 +63,7 @@ fn remove_and_assert_gone(
         DEVICEID,
     )?;
 
-    let subscriptions_after_removal = client.get_subscriptions(DEVICEID)?;
+    let subscriptions_after_removal = client.get_subscriptions_of_device(DEVICEID)?;
     assert!(!subscriptions_after_removal.contains(&get_dummy_url()));
     Ok(subscriptions_after_removal)
 }
@@ -79,7 +79,7 @@ fn test_subscription_changes() -> Result<(), Error> {
 
     let client = Client::new(&username, &password);
 
-    let subscriptions = client.get_subscriptions(DEVICEID)?;
+    let subscriptions = client.get_subscriptions_of_device(DEVICEID)?;
 
     let is_remove_first = subscriptions.contains(&get_dummy_url());
     let last_timestamp = if is_remove_first {
