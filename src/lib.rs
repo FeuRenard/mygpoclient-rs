@@ -24,6 +24,7 @@ pub use client::{AuthenticatedClient, DeviceClient};
 pub use error::Error;
 
 pub mod client;
+pub mod device;
 mod error;
 pub mod subscription;
 pub mod suggestion;
