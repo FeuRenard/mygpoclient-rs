@@ -6,15 +6,15 @@ use libmygpo_rs::subscription::{AllSubscriptions, SubscriptionChanges, Subscript
 use libmygpo_rs::DeviceClient;
 use libmygpo_rs::Error;
 
-const DEVICEID: &'static str = "randomdeviceid"; // TODO
 const DUMMY_PODCAST_URL: &'static str = "http://ubuntupodcast.org/feed/";
 
 #[test]
 fn test_subscription() -> Result<(), Error> {
     let username = env::var("GPODDER_NET_USERNAME").unwrap();
     let password = env::var("GPODDER_NET_PASSWORD").unwrap();
+    let deviceid = env::var("GPODDER_NET_DEVICEID").unwrap();
 
-    let client = DeviceClient::new(&username, &password, DEVICEID);
+    let client = DeviceClient::new(&username, &password, &deviceid);
 
     let subscriptions = client.get_subscriptions_of_device()?;
 
@@ -75,8 +75,9 @@ fn get_dummy_url() -> String {
 fn test_subscription_changes() -> Result<(), Error> {
     let username = env::var("GPODDER_NET_USERNAME").unwrap();
     let password = env::var("GPODDER_NET_PASSWORD").unwrap();
+    let deviceid = env::var("GPODDER_NET_DEVICEID").unwrap();
 
-    let client = DeviceClient::new(&username, &password, DEVICEID);
+    let client = DeviceClient::new(&username, &password, &deviceid);
 
     let subscriptions = client.get_subscriptions_of_device()?;
 
