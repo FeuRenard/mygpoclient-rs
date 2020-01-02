@@ -73,8 +73,32 @@ pub trait AllSubscriptions {
 pub trait SubscriptionsOfDevice {
     /// Get Subscriptions of Device
     ///
+    /// # Returns
+    ///
+    /// A `Result` which is:
+    ///
+    /// - `Ok`: A `Vec<String>` of all subscriptions as podcast feed URLs
+    /// - `Err`: A wrapped JSON or network error
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use libmygpo_rs::DeviceClient;
+    /// use libmygpo_rs::subscription::SubscriptionsOfDevice;
+    ///
+    /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
+    /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
+    /// # let deviceid = std::env::var("GPODDER_NET_DEVICEID").unwrap();
+    /// #
+    /// let client = DeviceClient::new(&username, &password, &deviceid);
+    ///
+    /// let subscriptions = client.get_subscriptions_of_device()?;
+    /// #
+    /// # Ok::<(), libmygpo_rs::Error>(())
+    /// ```
+    ///
     /// # See also
-    /// https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-subscriptions-of-device
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-subscriptions-of-device)
     fn get_subscriptions_of_device(&self) -> Result<Vec<String>, Error>;
 
     /// Upload Subscriptions of Device
