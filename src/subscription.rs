@@ -41,8 +41,25 @@ pub trait Subscriptions: AllSubscriptions + SubscriptionsOfDevice + Subscription
 pub trait AllSubscriptions {
     /// Get All Subscriptions
     ///
+    /// # Examples
+    ///
+    /// ```
+    /// use libmygpo_rs::AuthenticatedClient;
+    /// use libmygpo_rs::subscription::AllSubscriptions;
+    ///
+    /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
+    /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
+    /// #
+    /// let client = AuthenticatedClient::new(&username, &password);
+    ///
+    /// let subscriptions = client.get_all_subscriptions()?;
+    /// #
+    /// # Ok::<(), libmygpo_rs::Error>(())
+    /// ```
+    ///
     /// # See also
-    /// https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-all-subscriptions
+    ///
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-all-subscriptions)
     fn get_all_subscriptions(&self) -> Result<Vec<Subscription>, Error>;
 }
 
