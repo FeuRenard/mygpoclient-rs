@@ -35,6 +35,7 @@ pub struct GetSubscriptionChangesResponse {
     pub timestamp: u64,
 }
 
+/// [Subscriptions API](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html)
 pub trait Subscriptions: AllSubscriptions + SubscriptionsOfDevice + SubscriptionChanges {}
 
 pub trait AllSubscriptions {
