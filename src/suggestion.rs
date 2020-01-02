@@ -15,7 +15,11 @@ pub struct Suggestion {
     pub logo_url: Option<String>,
 }
 
-impl Client {
+pub trait Suggestions {
+    fn get_suggestions(&self, max_results: u8) -> Result<Vec<Suggestion>, Error>;
+}
+
+impl Suggestions for Client {
     /// Retrieve Suggested Podcasts
     ///
     /// # Arguments
@@ -25,6 +29,7 @@ impl Client {
     ///
     /// ```
     /// use libmygpo_rs::Client;
+    /// use libmygpo_rs::suggestion::Suggestions;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
@@ -42,7 +47,7 @@ impl Client {
     /// # See also
     ///
     /// - [Suggestions API: Retrieve Suggested Podcasts](https://gpoddernet.readthedocs.io/en/latest/api/reference/suggestions.html#retrieve-suggested-podcasts)
-    pub fn get_suggestions(&self, max_results: u8) -> Result<Vec<Suggestion>, Error> {
+    fn get_suggestions(&self, max_results: u8) -> Result<Vec<Suggestion>, Error> {
         Ok(self
             .get(&format!(
                 "https://gpodder.net/suggestions/{}.json",
