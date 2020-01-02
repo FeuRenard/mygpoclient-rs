@@ -103,8 +103,12 @@ pub trait SubscriptionsOfDevice {
 
     /// Upload Subscriptions of Device
     ///
+    /// # Parameters
+    ///
+    /// - `subscriptions`: A slice of podcast feed URLs as String representing the current subscription list
+    ///
     /// # See also
-    /// https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#upload-subscriptions-of-device
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#upload-subscriptions-of-device)
     fn upload_subscriptions_of_device(&self, subscriptions: &[String]) -> Result<(), Error>;
 }
 
@@ -113,12 +117,19 @@ pub trait SubscriptionChanges {
     ///
     /// # Parameters
     ///
-    /// - `add`: A slice of subscription URLs as String, that should be added
-    /// - `remove`: A slice of subscription URLs as String, that should be removed
+    /// - `add`: A slice of podcast feed URLs as String, that should be added to the device subscriptions
+    /// - `remove`: A slice of podcast feed URLs as String, that should be removed from the device subscriptions
+    ///
+    /// # Returns
+    ///
+    /// A `Result` which is:
+    ///
+    /// - `Ok`: A `UploadSubscriptionChangesResponse`
+    /// - `Err`: A wrapped JSON or network error
     ///
     /// # See also
     ///
-    /// - [API documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#upload-subscription-changes)
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#upload-subscription-changes)
     fn upload_subscription_changes(
         &self,
         add: &[String],
