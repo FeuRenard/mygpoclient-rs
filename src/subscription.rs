@@ -35,48 +35,31 @@ pub struct GetSubscriptionChangesResponse {
     pub timestamp: u64,
 }
 
-impl Client {
+pub trait Subscriptions: AllSubscriptions + SubscriptionsOfDevice + SubscriptionChanges {}
+
+pub trait AllSubscriptions {
     /// Get All Subscriptions
     ///
     /// # See also
     /// https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-all-subscriptions
-    pub fn get_all_subscriptions(&self) -> Result<Vec<Subscription>, Error> {
-        Ok(self
-            .get(&format!(
-                "https://gpodder.net/subscriptions/{}.json",
-                self.username
-            ))?
-            .json()?)
-    }
+    fn get_all_subscriptions(&self) -> Result<Vec<Subscription>, Error>;
+}
 
+pub trait SubscriptionsOfDevice {
     /// Get Subscriptions of Device
     ///
     /// # See also
     /// https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-subscriptions-of-device
-    pub fn get_subscriptions(&self, deviceid: &str) -> Result<Vec<String>, Error> {
-        Ok(self
-            .get(&format!(
-                "https://gpodder.net/subscriptions/{}/{}.json",
-                self.username, deviceid
-            ))?
-            .json()?) // TODO handle response?
-    }
+    fn get_subscriptions(&self, deviceid: &str) -> Result<Vec<String>, Error>;
 
     /// Upload Subscriptions of Device
     ///
     /// # See also
     /// https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#upload-subscriptions-of-device
-    pub fn put_subscriptions(&self, subscriptions: &[String], deviceid: &str) -> Result<(), Error> {
-        self.put(
-            &format!(
-                "https://gpodder.net/subscriptions/{}/{}.json",
-                self.username, deviceid
-            ),
-            subscriptions,
-        )?; // TODO handle response?
-        Ok(())
-    }
+    fn put_subscriptions(&self, subscriptions: &[String], deviceid: &str) -> Result<(), Error>;
+}
 
+pub trait SubscriptionChanges {
     /// Upload Subscription Changes
     ///
     /// # Parameters
@@ -87,7 +70,60 @@ impl Client {
     /// # See also
     ///
     /// - [API documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#upload-subscription-changes)
-    pub fn upload_subscription_changes(
+    fn upload_subscription_changes(
+        &self,
+        add: &[String],
+        remove: &[String],
+        deviceid: &str,
+    ) -> Result<UploadSubscriptionChangesResponse, Error>;
+
+    /// Get Subscription Changes
+    ///
+    /// # See also
+    ///
+    /// - [API documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-subscription-changes)
+    fn get_subscription_changes(
+        &self,
+        deviceid: &str,
+        timestamp: u64,
+    ) -> Result<GetSubscriptionChangesResponse, Error>;
+}
+
+impl AllSubscriptions for Client {
+    fn get_all_subscriptions(&self) -> Result<Vec<Subscription>, Error> {
+        Ok(self
+            .get(&format!(
+                "https://gpodder.net/subscriptions/{}.json",
+                self.username
+            ))?
+            .json()?)
+    }
+}
+
+impl SubscriptionsOfDevice for Client {
+    fn get_subscriptions(&self, deviceid: &str) -> Result<Vec<String>, Error> {
+        Ok(self
+            .get(&format!(
+                "https://gpodder.net/subscriptions/{}/{}.json",
+                self.username, deviceid
+            ))?
+            .json()?) // TODO handle response?
+    }
+
+    fn put_subscriptions(&self, subscriptions: &[String], deviceid: &str) -> Result<(), Error> {
+        self.put(
+            &format!(
+                "https://gpodder.net/subscriptions/{}/{}.json",
+                self.username, deviceid
+            ),
+            subscriptions,
+        )?; // TODO handle response?
+        Ok(())
+    }
+}
+
+impl SubscriptionChanges for Client {
+    fn upload_subscription_changes(
         &self,
         add: &[String],
         remove: &[String],
@@ -108,12 +144,7 @@ impl Client {
             .json()?)
     }
 
-    /// Get Subscription Changes
-    ///
-    /// # See also
-    ///
-    /// - [API documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-subscription-changes)
-    pub fn get_subscription_changes(
+    fn get_subscription_changes(
         &self,
         deviceid: &str,
         timestamp: u64,

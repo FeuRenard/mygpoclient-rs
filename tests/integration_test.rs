@@ -2,6 +2,7 @@ extern crate libmygpo_rs;
 
 use std::env;
 
+use libmygpo_rs::subscription::{AllSubscriptions, SubscriptionChanges, SubscriptionsOfDevice};
 use libmygpo_rs::Client;
 use libmygpo_rs::Error;
 
