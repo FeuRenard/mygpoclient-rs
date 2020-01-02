@@ -1,15 +1,15 @@
 const PACKAGE_NAME: &str = env!("CARGO_PKG_NAME");
 const PACKAGE_VERSION: &str = env!("CARGO_PKG_VERSION");
 
-pub struct Client {
+pub struct AuthenticatedClient {
     pub(crate) username: String,
     pub(crate) password: String,
     client: reqwest::Client,
 }
 
-impl Client {
-    pub fn new(username: &str, password: &str) -> Client {
-        Client {
+impl AuthenticatedClient {
+    pub fn new(username: &str, password: &str) -> AuthenticatedClient {
+        AuthenticatedClient {
             username: username.to_owned(),
             password: password.to_owned(),
             client: reqwest::Client::new(),

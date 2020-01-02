@@ -3,7 +3,7 @@ extern crate libmygpo_rs;
 use std::env;
 
 use libmygpo_rs::subscription::{AllSubscriptions, SubscriptionChanges, SubscriptionsOfDevice};
-use libmygpo_rs::Client;
+use libmygpo_rs::AuthenticatedClient;
 use libmygpo_rs::Error;
 
 const DEVICEID: &'static str = "randomdeviceid"; // TODO
@@ -14,7 +14,7 @@ fn test_subscription() -> Result<(), Error> {
     let username = env::var("GPODDER_NET_USERNAME").unwrap();
     let password = env::var("GPODDER_NET_PASSWORD").unwrap();
 
-    let client = Client::new(&username, &password);
+    let client = AuthenticatedClient::new(&username, &password);
 
     let subscriptions = client.get_subscriptions_of_device(DEVICEID)?;
 
@@ -29,7 +29,7 @@ fn test_subscription() -> Result<(), Error> {
 
 fn add_and_assert_contains(
     mut subscriptions: Vec<String>,
-    client: &Client,
+    client: &AuthenticatedClient,
 ) -> Result<Vec<String>, Error> {
     subscriptions.push(get_dummy_url());
     client.upload_subscriptions_of_device(&subscriptions, DEVICEID)?;
@@ -51,7 +51,7 @@ fn add_and_assert_contains(
 
 fn remove_and_assert_gone(
     subscriptions: Vec<String>,
-    client: &Client,
+    client: &AuthenticatedClient,
 ) -> Result<Vec<String>, Error> {
     client.upload_subscriptions_of_device(
         subscriptions
@@ -77,7 +77,7 @@ fn test_subscription_changes() -> Result<(), Error> {
     let username = env::var("GPODDER_NET_USERNAME").unwrap();
     let password = env::var("GPODDER_NET_PASSWORD").unwrap();
 
-    let client = Client::new(&username, &password);
+    let client = AuthenticatedClient::new(&username, &password);
 
     let subscriptions = client.get_subscriptions_of_device(DEVICEID)?;
 
@@ -115,7 +115,7 @@ fn test_subscription_changes() -> Result<(), Error> {
     Ok(())
 }
 
-fn add_changes(client: &Client) -> Result<u64, Error> {
+fn add_changes(client: &AuthenticatedClient) -> Result<u64, Error> {
     let dummy_podcast_url_with_spaces = format!("{}  ", DUMMY_PODCAST_URL);
     let add = vec![dummy_podcast_url_with_spaces.clone()];
     let remove = vec![];
@@ -135,7 +135,7 @@ fn add_changes(client: &Client) -> Result<u64, Error> {
     Ok(response.timestamp)
 }
 
-fn remove_changes(client: &Client) -> Result<u64, Error> {
+fn remove_changes(client: &AuthenticatedClient) -> Result<u64, Error> {
     let add = vec![];
     let remove = vec![get_dummy_url()];
 

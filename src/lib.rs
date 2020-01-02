@@ -20,7 +20,7 @@
     unused_qualifications
 )]
 
-pub use client::Client;
+pub use client::AuthenticatedClient;
 pub use error::Error;
 
 pub mod client;

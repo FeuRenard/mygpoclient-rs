@@ -1,4 +1,4 @@
-use crate::Client;
+use crate::AuthenticatedClient;
 use crate::Error;
 use serde::Deserialize;
 
@@ -25,13 +25,13 @@ pub trait Suggestions {
     /// # Examples
     ///
     /// ```
-    /// use libmygpo_rs::Client;
+    /// use libmygpo_rs::AuthenticatedClient;
     /// use libmygpo_rs::suggestion::Suggestions;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
     /// #
-    /// let client = Client::new(&username, &password);
+    /// let client = AuthenticatedClient::new(&username, &password);
     ///
     /// let max_results = 3;
     /// let suggestions = client.retrieve_suggested_podcasts(max_results)?;
@@ -47,7 +47,7 @@ pub trait Suggestions {
     fn retrieve_suggested_podcasts(&self, max_results: u8) -> Result<Vec<Suggestion>, Error>;
 }
 
-impl Suggestions for Client {
+impl Suggestions for AuthenticatedClient {
     fn retrieve_suggested_podcasts(&self, max_results: u8) -> Result<Vec<Suggestion>, Error> {
         Ok(self
             .get(&format!(

@@ -1,4 +1,4 @@
-use crate::Client;
+use crate::AuthenticatedClient;
 use crate::Error;
 use serde::{Deserialize, Serialize};
 
@@ -94,7 +94,7 @@ pub trait SubscriptionChanges {
     ) -> Result<GetSubscriptionChangesResponse, Error>;
 }
 
-impl AllSubscriptions for Client {
+impl AllSubscriptions for AuthenticatedClient {
     fn get_all_subscriptions(&self) -> Result<Vec<Subscription>, Error> {
         Ok(self
             .get(&format!(
@@ -105,7 +105,7 @@ impl AllSubscriptions for Client {
     }
 }
 
-impl SubscriptionsOfDevice for Client {
+impl SubscriptionsOfDevice for AuthenticatedClient {
     fn get_subscriptions_of_device(&self, deviceid: &str) -> Result<Vec<String>, Error> {
         Ok(self
             .get(&format!(
@@ -131,7 +131,7 @@ impl SubscriptionsOfDevice for Client {
     }
 }
 
-impl SubscriptionChanges for Client {
+impl SubscriptionChanges for AuthenticatedClient {
     fn upload_subscription_changes(
         &self,
         add: &[String],
