@@ -19,7 +19,7 @@ impl Client {
     /// Retrieve Suggested Podcasts
     ///
     /// # Arguments
-    /// * `number` - the maximum number of podcasts to return
+    /// * `max_results` - the maximum number of podcasts to return
     ///
     /// # Examples
     ///
@@ -42,9 +42,12 @@ impl Client {
     /// # See also
     ///
     /// - [Suggestions API: Retrieve Suggested Podcasts](https://gpoddernet.readthedocs.io/en/latest/api/reference/suggestions.html#retrieve-suggested-podcasts)
-    pub fn get_suggestions(&self, number: u8) -> Result<Vec<Suggestion>, Error> {
+    pub fn get_suggestions(&self, max_results: u8) -> Result<Vec<Suggestion>, Error> {
         Ok(self
-            .get(&format!("https://gpodder.net/suggestions/{}.json", number))?
+            .get(&format!(
+                "https://gpodder.net/suggestions/{}.json",
+                max_results
+            ))?
             .json()?)
     }
 }
