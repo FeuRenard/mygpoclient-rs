@@ -56,7 +56,11 @@ pub trait SubscriptionsOfDevice {
     ///
     /// # See also
     /// https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#upload-subscriptions-of-device
-    fn put_subscriptions(&self, subscriptions: &[String], deviceid: &str) -> Result<(), Error>;
+    fn upload_subscriptions_of_device(
+        &self,
+        subscriptions: &[String],
+        deviceid: &str,
+    ) -> Result<(), Error>;
 }
 
 pub trait SubscriptionChanges {
@@ -110,7 +114,11 @@ impl SubscriptionsOfDevice for Client {
             .json()?) // TODO handle response?
     }
 
-    fn put_subscriptions(&self, subscriptions: &[String], deviceid: &str) -> Result<(), Error> {
+    fn upload_subscriptions_of_device(
+        &self,
+        subscriptions: &[String],
+        deviceid: &str,
+    ) -> Result<(), Error> {
         self.put(
             &format!(
                 "https://gpodder.net/subscriptions/{}/{}.json",

@@ -32,7 +32,7 @@ fn add_and_assert_contains(
     client: &Client,
 ) -> Result<Vec<String>, Error> {
     subscriptions.push(get_dummy_url());
-    client.put_subscriptions(&subscriptions, DEVICEID)?;
+    client.upload_subscriptions_of_device(&subscriptions, DEVICEID)?;
 
     let subscriptions_after_addition = client.get_subscriptions(DEVICEID)?;
     assert!(subscriptions_after_addition.contains(&get_dummy_url()));
@@ -53,7 +53,7 @@ fn remove_and_assert_gone(
     subscriptions: Vec<String>,
     client: &Client,
 ) -> Result<Vec<String>, Error> {
-    client.put_subscriptions(
+    client.upload_subscriptions_of_device(
         subscriptions
             .iter()
             .filter(|&s| s != DUMMY_PODCAST_URL)
