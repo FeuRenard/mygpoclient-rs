@@ -127,9 +127,33 @@ pub trait SubscriptionChanges {
 
     /// Get Subscription Changes
     ///
+    /// # Returns
+    ///
+    /// A `Result` which is:
+    ///
+    /// - `Ok`: A `GetSubscriptionChangesResponse`
+    /// - `Err`: A wrapped JSON or network error
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use libmygpo_rs::DeviceClient;
+    /// use libmygpo_rs::subscription::SubscriptionChanges;
+    ///
+    /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
+    /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
+    /// # let deviceid = std::env::var("GPODDER_NET_DEVICEID").unwrap();
+    /// #
+    /// let client = DeviceClient::new(&username, &password, &deviceid);
+    ///
+    /// let subscription_changes = client.get_subscription_changes(0)?;
+    /// #
+    /// # Ok::<(), libmygpo_rs::Error>(())
+    /// ```
+    ///
     /// # See also
     ///
-    /// - [API documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-subscription-changes)
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-subscription-changes)
     fn get_subscription_changes(
         &self,
         timestamp: u64,
