@@ -2,15 +2,15 @@ use crate::client::{AuthenticatedClient, DeviceClient};
 use crate::Error;
 use serde::{Deserialize, Serialize};
 
-// TODO #[serde(rename_all = "lowercase")]
-#[allow(non_camel_case_types)]
+/// The type of the device
+#[serde(rename_all = "lowercase")]
 #[derive(Deserialize, Serialize)]
 pub enum DeviceType {
-    desktop,
-    laptop,
-    mobile,
-    server,
-    other,
+    Desktop,
+    Laptop,
+    Mobile,
+    Server,
+    Other,
 }
 
 #[derive(Deserialize)]
@@ -57,7 +57,7 @@ pub trait UpdateDeviceData {
     /// #
     /// let client = DeviceClient::new(&username, &password, &deviceid);
     ///
-    /// client.update_device_data("My Phone".to_owned(), None)?;
+    /// client.update_device_data("My Phone".to_owned(), DeviceType::Mobile)?;
     /// # Ok::<(), libmygpo_rs::Error>(())
     /// ```
     ///
