@@ -38,6 +38,11 @@ pub trait Devices: ListDevices {}
 pub trait UpdateDeviceData {
     /// Update Device Data
     ///
+    /// # Parameters
+    ///
+    /// - `caption`: The new human readable label for the device
+    /// - `device_type`: see `DeviceType`
+    ///
     /// # Returns
     ///
     /// A `Result` which is
