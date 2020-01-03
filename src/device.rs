@@ -17,8 +17,8 @@ pub enum DeviceType {
 pub struct Device {
     pub id: String,
     pub caption: String,
-    // TODO #[serde(rename(serialize = "type", deserialize = "type"))]
-    pub r#type: DeviceType,
+    #[serde(rename(serialize = "type", deserialize = "type"))]
+    pub device_type: DeviceType,
     pub subscriptions: u16,
 }
 
