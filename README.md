@@ -10,10 +10,9 @@ Rust client library for [gpodder.net](https://gpodder.net/)
 
 ## Testing
 
-1. Set environment variable `export GPODDER_NET_USERNAME=<username>`
-2. Set environment variable `export GPODDER_NET_PASSWORD=<password>`
-3. Set environment variable `export GPODDER_NET_DEVICEID=<deviceid>`
-4. Run `cargo test -- --test-threads=1`
+1. Enter valid gpodder.net credentials in `set-credentials.sh`
+2. Run `source ./set-credentials.sh`
+3. Run `cargo test -- --test-threads=1`
 
 The tests have to run consecutively because they share state on the gpodder.net server.
 
