@@ -1,6 +1,7 @@
 extern crate libmygpo_rs;
 
 use std::env;
+use std::{thread, time};
 
 use libmygpo_rs::subscription::{AllSubscriptions, SubscriptionChanges, SubscriptionsOfDevice};
 use libmygpo_rs::DeviceClient;
@@ -81,12 +82,16 @@ fn test_subscription_changes() -> Result<(), Error> {
 
     let subscriptions = client.get_subscriptions_of_device()?;
 
+    let one_second = time::Duration::from_secs(1);
+
     let is_remove_first = subscriptions.contains(&get_dummy_url());
     let last_timestamp = if is_remove_first {
         remove_changes(&client)?;
+        thread::sleep(one_second);
         add_changes(&client)?
     } else {
         add_changes(&client)?;
+        thread::sleep(one_second);
         remove_changes(&client)?
     };
 
