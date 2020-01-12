@@ -127,6 +127,29 @@ pub trait SubscriptionChanges {
     /// - `Ok`: A `UploadSubscriptionChangesResponse`
     /// - `Err`: A wrapped JSON or network error
     ///
+    /// # Examples
+    ///
+    /// ```
+    /// use libmygpo_rs::DeviceClient;
+    /// use libmygpo_rs::subscription::SubscriptionChanges;
+    ///
+    /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
+    /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
+    /// # let deviceid = std::env::var("GPODDER_NET_DEVICEID").unwrap();
+    /// #
+    /// let client = DeviceClient::new(&username, &password, &deviceid);
+    ///
+    /// # let url1 = "http://example.com/feed.rss".to_owned();
+    /// # let url2 = "http://example.org/podcast.php".to_owned();
+    /// # let url3 = "http://example.net/foo.xml".to_owned();
+    /// #
+    /// let add = vec![url1,url2];
+    /// let remove = vec![url3];
+    /// let response = client.upload_subscription_changes(&add, &remove)?;
+    /// #
+    /// # Ok::<(), libmygpo_rs::Error>(())
+    /// ```
+    ///
     /// # See also
     ///
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#upload-subscription-changes)
