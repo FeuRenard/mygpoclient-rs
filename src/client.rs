@@ -1,10 +1,14 @@
+use reqwest::blocking::{Client, Response};
+use reqwest::IntoUrl;
+use serde::Serialize;
+
 const PACKAGE_NAME: &str = env!("CARGO_PKG_NAME");
 const PACKAGE_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 pub struct AuthenticatedClient {
     pub(crate) username: String,
     pub(crate) password: String,
-    client: reqwest::Client,
+    client: Client,
 }
 
 pub struct DeviceClient {
@@ -17,23 +21,20 @@ impl AuthenticatedClient {
         AuthenticatedClient {
             username: username.to_owned(),
             password: password.to_owned(),
-            client: reqwest::Client::new(),
+            client: Client::new(),
         }
     }
 
-    pub(crate) fn get<U: reqwest::IntoUrl>(
-        &self,
-        url: U,
-    ) -> Result<reqwest::Response, reqwest::Error> {
+    pub(crate) fn get<U: IntoUrl>(&self, url: U) -> Result<Response, reqwest::Error> {
         let empty_slice: &[&String] = &[];
         self.get_with_query(url, empty_slice)
     }
 
-    pub(crate) fn get_with_query<U: reqwest::IntoUrl, T: serde::Serialize + ?Sized>(
+    pub(crate) fn get_with_query<U: IntoUrl, T: Serialize + ?Sized>(
         &self,
         url: U,
         query_parameters: &[&T],
-    ) -> Result<reqwest::Response, reqwest::Error> {
+    ) -> Result<Response, reqwest::Error> {
         self.client
             .get(url)
             .basic_auth(&self.username, Some(&self.password))
@@ -45,11 +46,11 @@ impl AuthenticatedClient {
             .send()
     }
 
-    pub(crate) fn put<T: serde::Serialize + ?Sized, U: reqwest::IntoUrl>(
+    pub(crate) fn put<T: Serialize + ?Sized, U: IntoUrl>(
         &self,
         url: U,
         json: &T,
-    ) -> Result<reqwest::Response, reqwest::Error> {
+    ) -> Result<Response, reqwest::Error> {
         self.client
             .put(url)
             .basic_auth(&self.username, Some(&self.password))
@@ -61,11 +62,11 @@ impl AuthenticatedClient {
             .send()
     }
 
-    pub(crate) fn post<T: serde::Serialize + ?Sized, U: reqwest::IntoUrl>(
+    pub(crate) fn post<T: Serialize + ?Sized, U: IntoUrl>(
         &self,
         url: U,
         json: &T,
-    ) -> Result<reqwest::Response, reqwest::Error> {
+    ) -> Result<Response, reqwest::Error> {
         self.client
             .post(url)
             .basic_auth(&self.username, Some(&self.password))
@@ -86,35 +87,32 @@ impl DeviceClient {
         }
     }
 
-    pub(crate) fn get<U: reqwest::IntoUrl>(
-        &self,
-        url: U,
-    ) -> Result<reqwest::Response, reqwest::Error> {
+    pub(crate) fn get<U: IntoUrl>(&self, url: U) -> Result<Response, reqwest::Error> {
         self.authenticated_client.get(url)
     }
 
-    pub(crate) fn get_with_query<U: reqwest::IntoUrl, T: serde::Serialize + ?Sized>(
+    pub(crate) fn get_with_query<U: IntoUrl, T: Serialize + ?Sized>(
         &self,
         url: U,
         query_parameters: &[&T],
-    ) -> Result<reqwest::Response, reqwest::Error> {
+    ) -> Result<Response, reqwest::Error> {
         self.authenticated_client
             .get_with_query(url, query_parameters)
     }
 
-    pub(crate) fn put<T: serde::Serialize + ?Sized, U: reqwest::IntoUrl>(
+    pub(crate) fn put<T: Serialize + ?Sized, U: IntoUrl>(
         &self,
         url: U,
         json: &T,
-    ) -> Result<reqwest::Response, reqwest::Error> {
+    ) -> Result<Response, reqwest::Error> {
         self.authenticated_client.put(url, json)
     }
 
-    pub(crate) fn post<T: serde::Serialize + ?Sized, U: reqwest::IntoUrl>(
+    pub(crate) fn post<T: Serialize + ?Sized, U: IntoUrl>(
         &self,
         url: U,
         json: &T,
-    ) -> Result<reqwest::Response, reqwest::Error> {
+    ) -> Result<Response, reqwest::Error> {
         self.authenticated_client.post(url, json)
     }
 }

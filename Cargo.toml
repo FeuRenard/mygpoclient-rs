@@ -15,6 +15,5 @@ travis-ci = { repository = "FeuRenard/libmygpo-rs", branch = "master" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-reqwest = "^0.9"
-serde = "^1"
-serde_json = "^1"
+reqwest = { version = "^0.10", features = ["blocking", "json"] }
+serde = { version = "^1.0", features = ["derive"]}
