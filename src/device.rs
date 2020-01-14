@@ -13,7 +13,7 @@ pub enum DeviceType {
     Other,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Device {
     pub id: String,
     pub caption: String,

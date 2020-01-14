@@ -22,13 +22,13 @@ pub(crate) struct UploadSubscriptionChangesRequest {
     pub(crate) remove: Vec<String>,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct UploadSubscriptionChangesResponse {
     pub timestamp: u64,
     pub update_urls: Vec<(String, String)>,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct GetSubscriptionChangesResponse {
     pub add: Vec<String>,
     pub remove: Vec<String>,

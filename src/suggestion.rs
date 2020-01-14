@@ -1,9 +1,9 @@
 use crate::AuthenticatedClient;
 use crate::Error;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// A Suggestion as returned by [`Client::get_suggestions`]
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct Suggestion {
     pub website: String,
     pub mygpo_link: String,
