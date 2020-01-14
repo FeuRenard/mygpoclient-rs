@@ -1,6 +1,6 @@
-# libmygpo-rs
+# mygpoclient-rs
 
-[![Build Status](https://travis-ci.org/FeuRenard/libmygpo-rs.svg?branch=master)](https://travis-ci.org/FeuRenard/libmygpo-rs)
+[![Build Status](https://travis-ci.org/FeuRenard/mygpoclient-rs.svg?branch=master)](https://travis-ci.org/FeuRenard/mygpoclient-rs)
 
 Rust client library for [gpodder.net](https://gpodder.net/)
 

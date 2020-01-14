@@ -1,5 +1,5 @@
 [package]
-name = "libmygpo-rs"
+name = "mygpoclient"
 version = "0.1.0"
 authors = ["FeuRenard <feurenard@posteo.de>"]
 edition = "2018"

@@ -53,8 +53,8 @@ pub trait UpdateDeviceData {
     /// # Examples
     ///
     /// ```
-    /// use libmygpo_rs::DeviceClient;
-    /// use libmygpo_rs::device::{DeviceType,UpdateDeviceData};
+    /// use mygpoclient::DeviceClient;
+    /// use mygpoclient::device::{DeviceType,UpdateDeviceData};
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
@@ -63,7 +63,7 @@ pub trait UpdateDeviceData {
     /// let client = DeviceClient::new(&username, &password, &deviceid);
     ///
     /// client.update_device_data("My Phone".to_owned(), DeviceType::Mobile)?;
-    /// # Ok::<(), libmygpo_rs::Error>(())
+    /// # Ok::<(), mygpoclient::Error>(())
     /// ```
     ///
     /// # See also
@@ -89,8 +89,8 @@ pub trait ListDevices {
     /// # Examples
     ///
     /// ```
-    /// use libmygpo_rs::AuthenticatedClient;
-    /// use libmygpo_rs::device::ListDevices;
+    /// use mygpoclient::AuthenticatedClient;
+    /// use mygpoclient::device::ListDevices;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
@@ -99,7 +99,7 @@ pub trait ListDevices {
     ///
     /// let devices = client.list_devices()?;
     ///
-    /// # Ok::<(), libmygpo_rs::Error>(())
+    /// # Ok::<(), mygpoclient::Error>(())
     /// ```
     ///
     /// # See also

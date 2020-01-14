@@ -25,8 +25,8 @@ pub trait Suggestions {
     /// # Examples
     ///
     /// ```
-    /// use libmygpo_rs::AuthenticatedClient;
-    /// use libmygpo_rs::suggestion::Suggestions;
+    /// use mygpoclient::AuthenticatedClient;
+    /// use mygpoclient::suggestion::Suggestions;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
@@ -38,7 +38,7 @@ pub trait Suggestions {
     ///
     /// assert!(suggestions.len() <= max_results as usize);
     ///
-    /// # Ok::<(), libmygpo_rs::Error>(())
+    /// # Ok::<(), mygpoclient::Error>(())
     /// ```
     ///
     /// # See also

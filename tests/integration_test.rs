@@ -1,11 +1,11 @@
-extern crate libmygpo_rs;
+extern crate mygpoclient;
 
 use std::env;
 use std::{thread, time};
 
-use libmygpo_rs::subscription::{AllSubscriptions, SubscriptionChanges, SubscriptionsOfDevice};
-use libmygpo_rs::DeviceClient;
-use libmygpo_rs::Error;
+use mygpoclient::subscription::{AllSubscriptions, SubscriptionChanges, SubscriptionsOfDevice};
+use mygpoclient::DeviceClient;
+use mygpoclient::Error;
 
 const DUMMY_PODCAST_URL: &'static str = "http://ubuntupodcast.org/feed/";
 

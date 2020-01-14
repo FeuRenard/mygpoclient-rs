@@ -51,8 +51,8 @@ pub trait AllSubscriptions {
     /// # Examples
     ///
     /// ```
-    /// use libmygpo_rs::AuthenticatedClient;
-    /// use libmygpo_rs::subscription::AllSubscriptions;
+    /// use mygpoclient::AuthenticatedClient;
+    /// use mygpoclient::subscription::AllSubscriptions;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
@@ -61,7 +61,7 @@ pub trait AllSubscriptions {
     ///
     /// let subscriptions = client.get_all_subscriptions()?;
     /// #
-    /// # Ok::<(), libmygpo_rs::Error>(())
+    /// # Ok::<(), mygpoclient::Error>(())
     /// ```
     ///
     /// # See also
@@ -83,8 +83,8 @@ pub trait SubscriptionsOfDevice {
     /// # Examples
     ///
     /// ```
-    /// use libmygpo_rs::DeviceClient;
-    /// use libmygpo_rs::subscription::SubscriptionsOfDevice;
+    /// use mygpoclient::DeviceClient;
+    /// use mygpoclient::subscription::SubscriptionsOfDevice;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
@@ -94,7 +94,7 @@ pub trait SubscriptionsOfDevice {
     ///
     /// let subscriptions = client.get_subscriptions_of_device()?;
     /// #
-    /// # Ok::<(), libmygpo_rs::Error>(())
+    /// # Ok::<(), mygpoclient::Error>(())
     /// ```
     ///
     /// # See also
@@ -130,8 +130,8 @@ pub trait SubscriptionChanges {
     /// # Examples
     ///
     /// ```
-    /// use libmygpo_rs::DeviceClient;
-    /// use libmygpo_rs::subscription::SubscriptionChanges;
+    /// use mygpoclient::DeviceClient;
+    /// use mygpoclient::subscription::SubscriptionChanges;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
@@ -147,7 +147,7 @@ pub trait SubscriptionChanges {
     /// let remove = vec![url3];
     /// let response = client.upload_subscription_changes(&add, &remove)?;
     /// #
-    /// # Ok::<(), libmygpo_rs::Error>(())
+    /// # Ok::<(), mygpoclient::Error>(())
     /// ```
     ///
     /// # See also
@@ -171,8 +171,8 @@ pub trait SubscriptionChanges {
     /// # Examples
     ///
     /// ```
-    /// use libmygpo_rs::DeviceClient;
-    /// use libmygpo_rs::subscription::SubscriptionChanges;
+    /// use mygpoclient::DeviceClient;
+    /// use mygpoclient::subscription::SubscriptionChanges;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
@@ -182,7 +182,7 @@ pub trait SubscriptionChanges {
     ///
     /// let subscription_changes = client.get_subscription_changes(0)?;
     /// #
-    /// # Ok::<(), libmygpo_rs::Error>(())
+    /// # Ok::<(), mygpoclient::Error>(())
     /// ```
     ///
     /// # See also
