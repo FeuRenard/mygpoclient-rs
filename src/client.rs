@@ -118,3 +118,9 @@ impl DeviceClient {
         self.authenticated_client.post(url, json)
     }
 }
+
+impl From<DeviceClient> for AuthenticatedClient {
+    fn from(device_client: DeviceClient) -> Self {
+        device_client.authenticated_client
+    }
+}
