@@ -31,11 +31,11 @@ pub struct UploadSubscriptionChangesResponse {
     pub update_urls: Vec<(String, String)>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub struct GetSubscriptionChangesResponse {
+    pub timestamp: u64,
     pub add: Vec<String>,
     pub remove: Vec<String>,
-    pub timestamp: u64,
 }
 
 /// [Subscriptions API](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html)
@@ -308,5 +308,15 @@ impl fmt::Display for Subscription {
 impl fmt::Display for UploadSubscriptionChangesResponse {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}: {:?}>", self.timestamp, self.update_urls)
+    }
+}
+
+impl fmt::Display for GetSubscriptionChangesResponse {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}: add{:?}, remove{:?}>",
+            self.timestamp, self.add, self.remove
+        )
     }
 }
