@@ -1,7 +1,9 @@
 use crate::client::{AuthenticatedClient, DeviceClient};
 use crate::Error;
 use serde::{Deserialize, Serialize};
+use std::cmp::Ordering;
 use std::fmt;
+use std::hash::{Hash, Hasher};
 
 /// The type of the device
 #[serde(rename_all = "lowercase")]
@@ -14,7 +16,7 @@ pub enum DeviceType {
     Other,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug, Clone, Eq)]
 pub struct Device {
     pub id: String,
     pub caption: String,
@@ -150,5 +152,35 @@ impl ListDevices for DeviceClient {
 impl fmt::Display for DeviceType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}", self)
+    }
+}
+
+impl PartialEq for Device {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+
+impl Ord for Device {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.id.cmp(&other.id)
+    }
+}
+
+impl PartialOrd for Device {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Hash for Device {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.id.hash(state);
+    }
+}
+
+impl fmt::Display for Device {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} {} (id={})", self.device_type, self.caption, self.id)
     }
 }
