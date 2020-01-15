@@ -1,9 +1,12 @@
 use crate::Error;
 use crate::{AuthenticatedClient, DeviceClient};
 use serde::{Deserialize, Serialize};
+use std::cmp::Ordering;
+use std::fmt;
+use std::hash::{Hash, Hasher};
 
 /// A Subscription as returned by [`Client::get_all_subscriptions`]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Subscription {
     pub url: String,
     pub title: String,
@@ -267,5 +270,37 @@ impl SubscriptionChanges for DeviceClient {
                 &[&("since", timestamp)],
             )?
             .json()?)
+    }
+}
+
+impl PartialEq for Subscription {
+    fn eq(&self, other: &Self) -> bool {
+        self.url == other.url
+    }
+}
+
+impl Eq for Subscription {}
+
+impl Ord for Subscription {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.url.cmp(&other.url)
+    }
+}
+
+impl PartialOrd for Subscription {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Hash for Subscription {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.url.hash(state);
+    }
+}
+
+impl fmt::Display for Subscription {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}: {} <{}>", self.title, self.description, self.url)
     }
 }
