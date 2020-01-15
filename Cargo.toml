@@ -4,14 +4,14 @@ version = "0.1.0"
 authors = ["FeuRenard <feurenard@posteo.de>"]
 edition = "2018"
 description = "Client library for gpodder.net API"
-repository = "https://github.com/FeuRenard/libmygpo-rs"
+repository = "https://github.com/FeuRenard/mygpoclient-rs"
 readme = "README.md"
 keywords = ["podcast","podcasts","gPodder","gpodder.net"]
 categories = ["api-bindings"]
 license = "GPL-3.0-only"
 
 [badges]
-travis-ci = { repository = "FeuRenard/libmygpo-rs", branch = "master" }
+travis-ci = { repository = "FeuRenard/mygpoclient-rs", branch = "master" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]
