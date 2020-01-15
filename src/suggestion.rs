@@ -1,9 +1,12 @@
 use crate::AuthenticatedClient;
 use crate::Error;
 use serde::{Deserialize, Serialize};
+use std::cmp::Ordering;
+use std::fmt;
+use std::hash::{Hash, Hasher};
 
 /// A Suggestion as returned by [`Client::get_suggestions`]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Suggestion {
     pub website: String,
     pub mygpo_link: String,
@@ -55,5 +58,37 @@ impl Suggestions for AuthenticatedClient {
                 max_results
             ))?
             .json()?)
+    }
+}
+
+impl PartialEq for Suggestion {
+    fn eq(&self, other: &Self) -> bool {
+        self.url == other.url
+    }
+}
+
+impl Eq for Suggestion {}
+
+impl Ord for Suggestion {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.url.cmp(&other.url)
+    }
+}
+
+impl PartialOrd for Suggestion {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Hash for Suggestion {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.url.hash(state);
+    }
+}
+
+impl fmt::Display for Suggestion {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}: {} <{}>", self.title, self.description, self.url)
     }
 }
