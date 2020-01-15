@@ -25,7 +25,7 @@ pub(crate) struct UploadSubscriptionChangesRequest {
     pub(crate) remove: Vec<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub struct UploadSubscriptionChangesResponse {
     pub timestamp: u64,
     pub update_urls: Vec<(String, String)>,
@@ -302,5 +302,11 @@ impl Hash for Subscription {
 impl fmt::Display for Subscription {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}: {} <{}>", self.title, self.description, self.url)
+    }
+}
+
+impl fmt::Display for UploadSubscriptionChangesResponse {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}: {:?}>", self.timestamp, self.update_urls)
     }
 }
