@@ -5,12 +5,14 @@ use serde::Serialize;
 const PACKAGE_NAME: &str = env!("CARGO_PKG_NAME");
 const PACKAGE_VERSION: &str = env!("CARGO_PKG_VERSION");
 
+#[derive(Debug, Clone)]
 pub struct AuthenticatedClient {
     pub(crate) username: String,
     pub(crate) password: String,
     client: Client,
 }
 
+#[derive(Debug, Clone)]
 pub struct DeviceClient {
     pub(crate) device_id: String,
     pub(crate) authenticated_client: AuthenticatedClient,
