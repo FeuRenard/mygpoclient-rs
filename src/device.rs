@@ -1,10 +1,11 @@
 use crate::client::{AuthenticatedClient, DeviceClient};
 use crate::Error;
 use serde::{Deserialize, Serialize};
+use std::fmt;
 
 /// The type of the device
 #[serde(rename_all = "lowercase")]
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum DeviceType {
     Desktop,
     Laptop,
@@ -143,5 +144,11 @@ impl ListDevices for AuthenticatedClient {
 impl ListDevices for DeviceClient {
     fn list_devices(&self) -> Result<Vec<Device>, Error> {
         self.authenticated_client.list_devices()
+    }
+}
+
+impl fmt::Display for DeviceType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self)
     }
 }
