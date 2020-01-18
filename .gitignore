@@ -1,4 +1,4 @@
 /target
 **/*.rs.bk
 Cargo.lock
-set-credentials.sh
+_set-credentials.sh

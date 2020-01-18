@@ -10,9 +10,10 @@ Rust client library for [gpodder.net](https://gpodder.net/)
 
 ## Testing
 
-1. Enter valid gpodder.net credentials in `set-credentials.sh`
-2. Run `source ./set-credentials.sh`
-3. Run `cargo test -- --test-threads=1`
+1. Run `cp set-credentials.sh _set-credentials.sh`
+2. Enter valid gpodder.net credentials in `_set-credentials.sh`
+3. Run `source ./_set-credentials.sh`
+4. Run `cargo test -- --test-threads=1`
 
 The tests have to run consecutively because they share state on the gpodder.net server.
 
