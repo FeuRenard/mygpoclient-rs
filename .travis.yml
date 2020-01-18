@@ -26,6 +26,6 @@ before_cache: |
 after_success: |
   if [[ "$TRAVIS_RUST_VERSION" == nightly ]]; then
     # code coverage: codecov.io & coveralls.io
-    cargo tarpaulin --ignore-tests --out Xml --ciserver travis-ci --coveralls $TRAVIS_JOB_ID -- --test-threads=1
+    cargo tarpaulin --run-types Tests Doctests --ignore-tests --out Xml --ciserver travis-ci --coveralls $TRAVIS_JOB_ID -- --test-threads=1
     bash <(curl -s https://codecov.io/bash)
   fi
