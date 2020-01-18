@@ -25,10 +25,7 @@ before_cache: |
 
 after_success: |
   if [[ "$TRAVIS_RUST_VERSION" == nightly ]]; then
-    # coveralls.io
-    cargo tarpaulin --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
-
-    # codecov.io
-    cargo tarpaulin --out Xml
+    # code coverage: codecov.io & coveralls.io
+    cargo tarpaulin --out Xml --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
     bash <(curl -s https://codecov.io/bash)
   fi
