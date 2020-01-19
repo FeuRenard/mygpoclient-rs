@@ -35,7 +35,7 @@ pub(crate) struct DeviceData {
 }
 
 /// [Device API](https://gpoddernet.readthedocs.io/en/latest/api/reference/devices.html)
-pub trait Devices: ListDevices {}
+pub trait Devices: UpdateDeviceData + ListDevices {}
 // TODO https://gpoddernet.readthedocs.io/en/latest/api/reference/devices.html#get-device-updates
 
 pub trait UpdateDeviceData {
