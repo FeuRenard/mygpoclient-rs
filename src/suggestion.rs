@@ -92,3 +92,46 @@ impl fmt::Display for Suggestion {
         write!(f, "{}: {} <{}>", self.title, self.description, self.url)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::Suggestion;
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::{Hash, Hasher};
+
+    #[test]
+    fn equal_suggestion_means_equal_hash() {
+        let suggestion1 = Suggestion {
+            url: String::from("http://goinglinux.com/mp3podcast.xml"),
+            website: String::from("http://www.linuxgeekdom.com"),
+            mygpo_link: String::from("http://gpodder.net/podcast/64439"),
+            description: String::from("Linux Geekdom"),
+            subscribers: 0,
+            title: String::from("Linux Geekdom"),
+            subscribers_last_week: 0,
+            logo_url: None,
+        };
+        let suggestion2 = Suggestion {
+            url: String::from("http://goinglinux.com/mp3podcast.xml"),
+            website: String::from("http://goinglinux.com"),
+            mygpo_link: String::from("http://gpodder.net/podcast/11171"),
+            description: String::from("Going Linux"),
+            subscribers: 571,
+            title: String::from("Going Linux"),
+            subscribers_last_week: 571,
+            logo_url: Some(String::from(
+                "http://goinglinux.com/images/GoingLinux80.png",
+            )),
+        };
+
+        assert_eq!(suggestion1, suggestion2);
+
+        let mut hasher1 = DefaultHasher::new();
+        suggestion1.hash(&mut hasher1);
+
+        let mut hasher2 = DefaultHasher::new();
+        suggestion2.hash(&mut hasher2);
+
+        assert_eq!(hasher1.finish(), hasher2.finish());
+    }
+}
