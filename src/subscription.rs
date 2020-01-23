@@ -320,3 +320,50 @@ impl fmt::Display for GetSubscriptionChangesResponse {
         )
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::Subscription;
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::{Hash, Hasher};
+
+    #[test]
+    fn equal_subscription_means_equal_hash() {
+        let subscription1 = Subscription {
+            url: String::from("http://goinglinux.com/mp3podcast.xml"),
+            website: Some(String::from("http://www.linuxgeekdom.com")),
+            mygpo_link: String::from("http://gpodder.net/podcast/64439"),
+            description: String::from("Linux Geekdom"),
+            subscribers: 0,
+            title: String::from("Linux Geekdom"),
+            subscribers_last_week: 0,
+            logo_url: None,
+            scaled_logo_url: None,
+        };
+        let subscription2 = Subscription {
+            url: String::from("http://goinglinux.com/mp3podcast.xml"),
+            website: Some(String::from("http://goinglinux.com")),
+            mygpo_link: String::from("http://gpodder.net/podcast/11171"),
+            description: String::from("Going Linux"),
+            subscribers: 571,
+            title: String::from("Going Linux"),
+            subscribers_last_week: 571,
+            logo_url: Some(String::from(
+                "http://goinglinux.com/images/GoingLinux80.png",
+            )),
+            scaled_logo_url: Some(String::from(
+                "http://goinglinux.com/images/GoingLinux80.png",
+            )),
+        };
+
+        assert_eq!(subscription1, subscription2);
+
+        let mut hasher1 = DefaultHasher::new();
+        subscription1.hash(&mut hasher1);
+
+        let mut hasher2 = DefaultHasher::new();
+        subscription2.hash(&mut hasher2);
+
+        assert_eq!(hasher1.finish(), hasher2.finish());
+    }
+}
