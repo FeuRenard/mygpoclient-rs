@@ -324,6 +324,7 @@ impl fmt::Display for GetSubscriptionChangesResponse {
 #[cfg(test)]
 mod tests {
     use super::Subscription;
+    use std::cmp::Ordering;
     use std::collections::hash_map::DefaultHasher;
     use std::hash::{Hash, Hasher};
 
@@ -357,6 +358,10 @@ mod tests {
         };
 
         assert_eq!(subscription1, subscription2);
+        assert_eq!(
+            subscription1.partial_cmp(&subscription2),
+            Some(Ordering::Equal)
+        );
 
         let mut hasher1 = DefaultHasher::new();
         subscription1.hash(&mut hasher1);

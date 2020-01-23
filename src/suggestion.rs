@@ -102,6 +102,7 @@ impl fmt::Display for Suggestion {
 #[cfg(test)]
 mod tests {
     use super::Suggestion;
+    use std::cmp::Ordering;
     use std::collections::hash_map::DefaultHasher;
     use std::hash::{Hash, Hasher};
 
@@ -131,6 +132,7 @@ mod tests {
         };
 
         assert_eq!(suggestion1, suggestion2);
+        assert_eq!(suggestion1.partial_cmp(&suggestion2), Some(Ordering::Equal));
 
         let mut hasher1 = DefaultHasher::new();
         suggestion1.hash(&mut hasher1);
