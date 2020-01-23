@@ -1,5 +1,5 @@
-use crate::AuthenticatedClient;
 use crate::Error;
+use crate::{AuthenticatedClient, DeviceClient};
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::fmt;
@@ -58,6 +58,12 @@ impl Suggestions for AuthenticatedClient {
                 max_results
             ))?
             .json()?)
+    }
+}
+
+impl Suggestions for DeviceClient {
+    fn retrieve_suggested_podcasts(&self, max_results: u8) -> Result<Vec<Suggestion>, Error> {
+        self.as_ref().retrieve_suggested_podcasts(max_results)
     }
 }
 

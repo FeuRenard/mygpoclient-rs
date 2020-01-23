@@ -145,7 +145,7 @@ impl ListDevices for AuthenticatedClient {
 
 impl ListDevices for DeviceClient {
     fn list_devices(&self) -> Result<Vec<Device>, Error> {
-        self.authenticated_client.list_devices()
+        self.as_ref().list_devices()
     }
 }
 

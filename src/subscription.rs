@@ -210,7 +210,7 @@ impl AllSubscriptions for AuthenticatedClient {
 
 impl AllSubscriptions for DeviceClient {
     fn get_all_subscriptions(&self) -> Result<Vec<Subscription>, Error> {
-        self.authenticated_client.get_all_subscriptions()
+        self.as_ref().get_all_subscriptions()
     }
 }
 

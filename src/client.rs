@@ -124,3 +124,9 @@ impl From<DeviceClient> for AuthenticatedClient {
         device_client.authenticated_client
     }
 }
+
+impl AsRef<AuthenticatedClient> for DeviceClient {
+    fn as_ref(&self) -> &AuthenticatedClient {
+        &self.authenticated_client
+    }
+}
