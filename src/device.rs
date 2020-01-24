@@ -184,3 +184,65 @@ impl fmt::Display for Device {
         write!(f, "{} {} (id={})", self.device_type, self.caption, self.id)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::{Device, DeviceType};
+    use std::cmp::Ordering;
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::{Hash, Hasher};
+
+    #[test]
+    fn equal_device_means_equal_hash() {
+        let device1 = Device {
+            id: String::from("abcdef"),
+            caption: String::from("gPodder on my Lappy"),
+            device_type: DeviceType::Laptop,
+            subscriptions: 27,
+        };
+        let device2 = Device {
+            id: String::from("abcdef"),
+            caption: String::from("unnamed"),
+            device_type: DeviceType::Other,
+            subscriptions: 1,
+        };
+
+        assert_eq!(device1, device2);
+        assert_eq!(device1.partial_cmp(&device2), Some(Ordering::Equal));
+
+        let mut hasher1 = DefaultHasher::new();
+        device1.hash(&mut hasher1);
+
+        let mut hasher2 = DefaultHasher::new();
+        device2.hash(&mut hasher2);
+
+        assert_eq!(hasher1.finish(), hasher2.finish());
+    }
+
+    #[test]
+    fn not_equal_devices_have_non_equal_ordering() {
+        let device1 = Device {
+            id: String::from("abcdef"),
+            caption: String::from("gPodder on my Lappy"),
+            device_type: DeviceType::Laptop,
+            subscriptions: 27,
+        };
+        let device2 = Device {
+            id: String::from("phone-au90f923023.203f9j23f"),
+            caption: String::from("My Phone"),
+            device_type: DeviceType::Mobile,
+            subscriptions: 5,
+        };
+
+        assert_ne!(device1, device2);
+        assert_eq!(device1.partial_cmp(&device2), Some(Ordering::Less));
+
+        let mut hasher1 = DefaultHasher::new();
+        device1.hash(&mut hasher1);
+
+        let mut hasher2 = DefaultHasher::new();
+        device2.hash(&mut hasher2);
+
+        assert_ne!(hasher1.finish(), hasher2.finish());
+    }
+}
