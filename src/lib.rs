@@ -25,6 +25,7 @@ pub use error::Error;
 
 pub mod client;
 pub mod device;
+pub mod episode;
 mod error;
 pub mod subscription;
 pub mod suggestion;
