@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/FeuRenard/mygpoclient-rs.svg?branch=master)](https://travis-ci.org/FeuRenard/mygpoclient-rs)
 [![codecov](https://codecov.io/gh/FeuRenard/mygpoclient-rs/branch/master/graph/badge.svg)](https://codecov.io/gh/FeuRenard/mygpoclient-rs)
 [![coveralls](https://coveralls.io/repos/github/FeuRenard/mygpoclient-rs/badge.svg?branch=master)](https://coveralls.io/github/FeuRenard/mygpoclient-rs?branch=master)
+[![Gitmoji](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square)](https://gitmoji.carloscuesta.me)
 
 Rust client library for [gpodder.net](https://gpodder.net/)
 
