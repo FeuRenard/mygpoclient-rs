@@ -1,7 +1,6 @@
 use crate::AuthenticatedClient;
 use crate::Error;
-use chrono::DateTime;
-use chrono::Utc;
+use chrono::naive::NaiveDateTime;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -34,16 +33,27 @@ pub struct EpisodeAction {
     #[serde(flatten)]
     pub action: EpisodeActionType,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub timestamp: Option<DateTime<Utc>>,
+    pub timestamp: Option<NaiveDateTime>,
 }
 
 // TODO see UploadSubscriptionChangesResponse
+/// Response to [`upload_episode_actions`](#method.upload_episode_actions)
+///
+/// [update_urls] is a list of URLs that have been rewritten (sanitized, see bug:747 and bug:862) as a list of tuples. The client SHOULD parse this list and update the local subscription and episode list accordingly (the server only sanitizes the URL, so the semantic “content” should stay the same and therefore the client can simply update the URL value locally and use it for future updates.
+/// URLs that are not allowed (currently all URLs that contain non-ASCII characters or don’t start with either http or https) are rewritten to the empty string and are ignored by the Webservice.
+///
+/// [gpodder.net API Documentation]: https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html#upload-episode-actions
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub struct UploadEpisodeActionsResponse {
     pub timestamp: u64,
     pub update_urls: Vec<(String, String)>,
 }
 
+/// Response of [`get_episode_actions`](#method.get_episode_actions)
+///
+/// The format of the action list is the same as with the action upload request, but the format is a bit different so that the server can send the new timestamp (that the client SHOULD save and use for subsequent requests).
+///
+/// [gpodder.net API Documentation]: https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html#get-episode-actions
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub struct GetEpisodeActionsResponse {
     pub actions: Vec<EpisodeAction>,
@@ -82,7 +92,7 @@ pub trait UploadEpisodeActions {
     /// #
     /// let client = AuthenticatedClient::new(&username, &password);
     ///
-    /// let episode_action_1 = EpisodeAction::new_download("http://example.com/feed.rss".to_owned(), "http://example.com/files/s01e20.mp3".to_owned(), Some(Utc.ymd(2009,12,12).and_hms(9,0,0)));
+    /// let episode_action_1 = EpisodeAction::new_download("http://example.com/feed.rss".to_owned(), "http://example.com/files/s01e20.mp3".to_owned(), Some(NaiveDate::from_ymd(2009,12,12).and_hms(9,0,0)));
     /// let episode_action_2 = EpisodeAction::new_play("http://example.org/podcast.php".to_owned(), "http://ftp.example.org/foo.ogg".to_owned(), None,120,15,500);
     /// let episode_actions = vec!(episode_action_1, episode_action_2);
     ///
@@ -96,7 +106,37 @@ pub trait UploadEpisodeActions {
     ) -> Result<UploadEpisodeActionsResponse, Error>;
 }
 
+// TODO use Date(time?) instead of timestamps as integers
+// TODO use URL struct instead of plain strings for feed urls
 pub trait GetEpisodeActions {
+    /// Get Episode Actions
+    ///
+    /// Timestamps: The result is a list of all episode actions that were uploaded since the timestamp given in the since parameter (regardless of the action timestamp itself). The timestamp SHOULD be the value returned by the previous episode retrieve request. If no since value is given, ALL episode actions for the given user are returned. Please note that this could be a potentially long list of episode actions, so clients SHOULD provide a since value whenever possible (e.g. when uploads have been taken place before).
+    ///
+    /// [gpodder.net API Documentation]: https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html#get-episode-actions
+    ///
+    /// # Parameters
+    ///
+    /// - [podcast]: The URL of a Podcast feed; if set, only actions for episodes of the given podcast are returned
+    /// - [since]: Only episode actions since the given timestamp are returned
+    /// - [aggregated]: If true, only the latest actions is returned for each episode
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use mygpoclient::AuthenticatedClient;
+    /// use mygpoclient::episode::GetEpisodeActions;
+    /// use chrono::prelude::*;
+    ///
+    /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
+    /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
+    /// #
+    /// let client = AuthenticatedClient::new(&username, &password);
+    ///
+    /// let response = client.get_episode_actions(Some("http://example.com/feed.rss"), None, false)?;
+    /// #
+    /// # Ok::<(), mygpoclient::Error>(())
+    /// ```
     fn get_episode_actions(
         &self,
         podcast: Option<&str>,
@@ -109,7 +149,7 @@ impl EpisodeAction {
     fn new(
         podcast: String,
         episode: String,
-        timestamp: Option<DateTime<Utc>>,
+        timestamp: Option<NaiveDateTime>,
         action: EpisodeActionType,
     ) -> EpisodeAction {
         EpisodeAction {
@@ -125,7 +165,7 @@ impl EpisodeAction {
     pub fn new_download(
         podcast: String,
         episode: String,
-        timestamp: Option<DateTime<Utc>>,
+        timestamp: Option<NaiveDateTime>,
     ) -> EpisodeAction {
         Self::new(podcast, episode, timestamp, EpisodeActionType::Download)
     }
@@ -134,7 +174,7 @@ impl EpisodeAction {
     pub fn new_delete(
         podcast: String,
         episode: String,
-        timestamp: Option<DateTime<Utc>>,
+        timestamp: Option<NaiveDateTime>,
     ) -> EpisodeAction {
         Self::new(podcast, episode, timestamp, EpisodeActionType::Delete)
     }
@@ -143,7 +183,7 @@ impl EpisodeAction {
     pub fn new_new(
         podcast: String,
         episode: String,
-        timestamp: Option<DateTime<Utc>>,
+        timestamp: Option<NaiveDateTime>,
     ) -> EpisodeAction {
         Self::new(podcast, episode, timestamp, EpisodeActionType::New)
     }
@@ -152,7 +192,7 @@ impl EpisodeAction {
     pub fn new_play_stop(
         podcast: String,
         episode: String,
-        timestamp: Option<DateTime<Utc>>,
+        timestamp: Option<NaiveDateTime>,
         position: u32,
     ) -> EpisodeAction {
         EpisodeAction {
@@ -172,7 +212,7 @@ impl EpisodeAction {
     pub fn new_play(
         podcast: String,
         episode: String,
-        timestamp: Option<DateTime<Utc>>,
+        timestamp: Option<NaiveDateTime>,
         position: u32,
         started: u32,
         total: u32,
@@ -222,20 +262,20 @@ impl GetEpisodeActions for AuthenticatedClient {
             Some(s) => s.to_string(),
             None => String::new(),
         };
-        let query_paramter_since: (&str, &str) = ("since", since_string.as_ref());
+        let query_parameter_since: (&str, &str) = ("since", since_string.as_ref());
 
         if !since_string.is_empty() {
-            query_parameters.push(&query_paramter_since);
+            query_parameters.push(&query_parameter_since);
         }
 
         let podcast_string = match podcast {
             Some(p) => p.to_string(),
             None => String::new(),
         };
-        let query_paramter_podcast: (&str, &str) = ("podcast", podcast_string.as_ref());
+        let query_parameter_podcast: (&str, &str) = ("podcast", podcast_string.as_ref());
 
         if !podcast_string.is_empty() {
-            query_parameters.push(&query_paramter_podcast);
+            query_parameters.push(&query_parameter_podcast);
         }
 
         Ok(self
