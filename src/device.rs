@@ -1,5 +1,5 @@
 use crate::client::{AuthenticatedClient, DeviceClient};
-use crate::Error;
+use crate::error::Error;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::fmt;

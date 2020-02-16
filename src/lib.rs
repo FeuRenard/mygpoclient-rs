@@ -20,12 +20,9 @@
     unused_qualifications
 )]
 
-pub use client::{AuthenticatedClient, DeviceClient};
-pub use error::Error;
-
 pub mod client;
 pub mod device;
 pub mod episode;
-mod error;
+pub mod error;
 pub mod subscription;
 pub mod suggestion;

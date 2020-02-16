@@ -1,5 +1,5 @@
-use crate::AuthenticatedClient;
-use crate::Error;
+use crate::client::AuthenticatedClient;
+use crate::error::Error;
 use chrono::naive::NaiveDateTime;
 use serde::Deserialize;
 use serde::Serialize;
