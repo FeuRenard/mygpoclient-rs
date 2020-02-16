@@ -1,62 +1,80 @@
+#![deny(missing_docs)]
+
+//! Module for [`EpisodeActions`](./episode/trait.EpisodeActions.html)
+
 use crate::client::AuthenticatedClient;
 use crate::error::Error;
 use chrono::naive::NaiveDateTime;
 use serde::Deserialize;
 use serde::Serialize;
 
-/// Episode Action Types as used in [EpisodeAction]s
+/// Type of an [EpisodeAction](./struct.EpisodeAction.html)
 ///
 /// [gpodder.net API Documentation]: https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html#episode-action-types
 #[serde(rename_all = "lowercase", tag = "action")]
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum EpisodeActionType {
+    /// download event, so that other clients know where a file has already been downloaded
     Download,
+    /// delete event, so that other clients know where a file has already been deleted
     Delete,
+    /// play event, so that other clients know where to start playback
     Play {
+        /// the position (in seconds) at which the client stopped playback
         position: u32,
+        /// the position (in seconds) at which the client started playback. Requires total to be set.
         #[serde(skip_serializing_if = "Option::is_none")]
         started: Option<u32>,
+        /// the total length of the file in seconds. Requires started to be set.
         #[serde(skip_serializing_if = "Option::is_none")]
         total: Option<u32>,
     },
+    /// Resets previous events. This state needs to be interpreted by receiving clients and does not delete any information on the webservice.
     New,
+    /// (undocumented)
     Flattr,
 }
 
-/// Represents an episode-related event
+/// Episode-related event
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub struct EpisodeAction {
+    /// feed URL to the podcast feed the episode belongs to
     pub podcast: String,
+    /// media URL of the episode
     pub episode: String,
+    /// device ID on which the action has taken place
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
+    /// see [EpisodeActionType](./enum.EpisodeActionType.html)
     #[serde(flatten)]
     pub action: EpisodeActionType,
+    /// UTC timestamp when the action took place
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timestamp: Option<NaiveDateTime>,
 }
 
 // TODO see UploadSubscriptionChangesResponse
-/// Response to [`upload_episode_actions`](#method.upload_episode_actions)
-///
-/// [update_urls] is a list of URLs that have been rewritten (sanitized, see bug:747 and bug:862) as a list of tuples. The client SHOULD parse this list and update the local subscription and episode list accordingly (the server only sanitizes the URL, so the semantic “content” should stay the same and therefore the client can simply update the URL value locally and use it for future updates.
-/// URLs that are not allowed (currently all URLs that contain non-ASCII characters or don’t start with either http or https) are rewritten to the empty string and are ignored by the Webservice.
+/// Response to [`upload_episode_actions`](./trait.UploadEpisodeActions.html#tymethod.upload_episode_actions)
 ///
 /// [gpodder.net API Documentation]: https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html#upload-episode-actions
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub struct UploadEpisodeActionsResponse {
+    /// the current timestamp; for retrieving changes since the last query
     pub timestamp: u64,
+    /// list of URLs that have been rewritten (sanitized, see bug:747 and bug:862) as a list of tuples. The client SHOULD parse this list and update the local subscription and episode list accordingly (the server only sanitizes the URL, so the semantic “content” should stay the same and therefore the client can simply update the URL value locally and use it for future updates.
+    ///
+    /// URLs that are not allowed (currently all URLs that contain non-ASCII characters or don’t start with either http or https) are rewritten to the empty string and are ignored by the Webservice.
     pub update_urls: Vec<(String, String)>,
 }
 
-/// Response of [`get_episode_actions`](#method.get_episode_actions)
-///
-/// The format of the action list is the same as with the action upload request, but the format is a bit different so that the server can send the new timestamp (that the client SHOULD save and use for subsequent requests).
+/// Response to [`get_episode_actions`](./trait.GetEpisodeActions.html#tymethod.get_episode_actions)
 ///
 /// [gpodder.net API Documentation]: https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html#get-episode-actions
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub struct GetEpisodeActionsResponse {
+    /// see [EpisodeAction](./struct.EpisodeAction.html)
     pub actions: Vec<EpisodeAction>,
+    /// new timestamp that the client SHOULD save and use for subsequent requests
     pub timestamp: u64,
 }
 
@@ -72,10 +90,11 @@ pub struct GetEpisodeActionsResponse {
 /// [gpodder.net API Documentation]: https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html
 pub trait EpisodeActions: UploadEpisodeActions + GetEpisodeActions {}
 
+/// see [`upload_episode_actions`](./trait.UploadEpisodeActions.html#tymethod.upload_episode_actions)
 pub trait UploadEpisodeActions {
-    /// Upload Episode Actions
+    /// Upload changed episode actions.
     ///
-    /// Upload changed episode actions. As actions are saved on a per-user basis (not per-device), the API endpoint is the same for every device. For logging purposes, the client can send the device ID to the server, so it appears in the episode action log on the website.
+    /// As actions are saved on a per-user basis (not per-device), the API endpoint is the same for every device. For logging purposes, the client can send the device ID to the server, so it appears in the episode action log on the website.
     ///
     /// [gpodder.net API Documentation]: https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html#upload-episode-actions
     ///
@@ -108,8 +127,9 @@ pub trait UploadEpisodeActions {
 
 // TODO use Date(time?) instead of timestamps as integers
 // TODO use URL struct instead of plain strings for feed urls
+/// see [`get_episode_actions`](./trait.GetEpisodeActions.html#tymethod.get_episode_actions)
 pub trait GetEpisodeActions {
-    /// Get Episode Actions
+    /// Get changed episode actions
     ///
     /// Timestamps: The result is a list of all episode actions that were uploaded since the timestamp given in the since parameter (regardless of the action timestamp itself). The timestamp SHOULD be the value returned by the previous episode retrieve request. If no since value is given, ALL episode actions for the given user are returned. Please note that this could be a potentially long list of episode actions, so clients SHOULD provide a since value whenever possible (e.g. when uploads have been taken place before).
     ///
@@ -117,9 +137,9 @@ pub trait GetEpisodeActions {
     ///
     /// # Parameters
     ///
-    /// - [podcast]: The URL of a Podcast feed; if set, only actions for episodes of the given podcast are returned
-    /// - [since]: Only episode actions since the given timestamp are returned
-    /// - [aggregated]: If true, only the latest actions is returned for each episode
+    /// - [`podcast`]: The URL of a Podcast feed; if set, only actions for episodes of the given podcast are returned
+    /// - [`since`]: Only episode actions since the given timestamp are returned
+    /// - [`aggregated`]: If true, only the latest actions is returned for each episode
     ///
     /// # Examples
     ///
