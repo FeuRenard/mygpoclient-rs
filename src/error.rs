@@ -1,5 +1,11 @@
+#![deny(missing_docs)]
+
+//! Error handling
+
+/// Error resulting from an API request
 #[derive(Debug)]
 pub enum Error {
+    /// Error originating from reqwest crate
     NetworkError(reqwest::Error),
 }
 
