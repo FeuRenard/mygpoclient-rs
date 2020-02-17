@@ -1,3 +1,7 @@
+#![deny(missing_docs)]
+
+//! Retrieve [`Suggestions`](./suggestion/trait.Suggestions.html)
+
 use crate::client::AuthenticatedClient;
 use crate::client::DeviceClient;
 use crate::error::Error;
@@ -6,16 +10,24 @@ use std::cmp::Ordering;
 use std::fmt;
 use std::hash::{Hash, Hasher};
 
-/// A Suggestion as returned by [`Client::get_suggestions`]
+/// A podcast suggestion as returned by [`retrieve_suggested_podcasts`](/trait.Suggestions.html#tymethod.retrieve_suggested_podcasts)
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Suggestion {
+    /// website of podcast
     pub website: String,
+    /// service-internal feed link
     pub mygpo_link: String,
+    /// description of podcast
     pub description: String,
+    /// number of subscribers on service
     pub subscribers: u16,
+    /// title of podcast
     pub title: String,
+    /// feed URL
     pub url: String,
+    /// number of subscribers on service one week before
     pub subscribers_last_week: u16,
+    /// URL to logo of podcast
     pub logo_url: Option<String>,
 }
 
@@ -23,8 +35,9 @@ pub struct Suggestion {
 pub trait Suggestions {
     /// Retrieve Suggested Podcasts
     ///
-    /// # Arguments
-    /// * `max_results` - the maximum number of podcasts to return
+    /// Download a list of podcasts that the user has not yet subscribed to (by checking all server-side subscription lists) and that might be interesting to the user based on existing subscriptions (again on all server-side subscription lists).
+    ///
+    /// The server does not specify the “relevance” for the podcast suggestion, and the client application SHOULD filter out any podcasts that are already added to the client application but that the server does not know about yet (although this is just a suggestion for a good client-side UX).
     ///
     /// # Examples
     ///
