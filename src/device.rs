@@ -1,3 +1,7 @@
+#![deny(missing_docs)]
+
+//! Manage [`Device`](./device/struct.Device.html)`s`
+
 use crate::client::{AuthenticatedClient, DeviceClient};
 use crate::error::Error;
 use serde::{Deserialize, Serialize};
@@ -5,23 +9,35 @@ use std::cmp::Ordering;
 use std::fmt;
 use std::hash::{Hash, Hasher};
 
-/// The type of the device
+/// Type of the [`Device`](./struct.Device.html)
 #[serde(rename_all = "lowercase")]
 #[derive(Deserialize, Serialize, Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum DeviceType {
+    /// desktop computer
     Desktop,
+    /// portable computer
     Laptop,
+    /// smartphone/tablet
     Mobile,
+    /// server
     Server,
+    /// any type of device, which doesn't fit another variant
     Other,
 }
 
+/// Devices are used throughout the API to identify a device / a client application.
 #[derive(Deserialize, Serialize, Debug, Clone, Eq)]
 pub struct Device {
+    /// A device ID can be any string matching the regular expression `[\w.-]+`. The client application MUST generate a string to be used as its device ID, and SHOULD ensure that it is unique within the user account. A good approach is to combine the application name and the name of the host it is running on.
+    ///
+    /// If two applications share a device ID, this might cause subscriptions to be overwritten on the server side. While it is possible to retrieve a list of devices and their IDs from the server, this SHOULD NOT be used to let a user select an existing device ID.
     pub id: String,
+    /// Human readable label for the device
     pub caption: String,
+    /// Type of the device
     #[serde(rename(serialize = "type", deserialize = "type"))]
     pub device_type: DeviceType,
+    /// number of subscriptions for this device
     pub subscriptions: u16,
 }
 
@@ -38,20 +54,14 @@ pub(crate) struct DeviceData {
 pub trait Devices: UpdateDeviceData + ListDevices {}
 // TODO https://gpoddernet.readthedocs.io/en/latest/api/reference/devices.html#get-device-updates
 
+/// see [`update_device_data`](./trait.UpdateDeviceData.html#tymethod.update_device_data)
 pub trait UpdateDeviceData {
     /// Update Device Data
     ///
     /// # Parameters
     ///
     /// - `caption`: The new human readable label for the device
-    /// - `device_type`: see `DeviceType`
-    ///
-    /// # Returns
-    ///
-    /// A `Result` which is
-    ///
-    /// - `Ok`
-    /// - `Err`: A wrapped JSON or network error
+    /// - `device_type`: see [`DeviceType`](./enum.DeviceType.html)
     ///
     /// # Examples
     ///
@@ -79,15 +89,11 @@ pub trait UpdateDeviceData {
     ) -> Result<(), Error>;
 }
 
+/// see [`list_devices'](./trait.ListDevices.html#tymethod.list_devices)
 pub trait ListDevices {
     /// List Devices
     ///
-    /// # Returns
-    ///
-    /// A `Result` which is
-    ///
-    /// - `Ok`: A `Vec<Device>` of all devices
-    /// - `Err`: A wrapped JSON or network error
+    /// Returns the list of devices that belong to a user. This can be used by the client to let the user select a device from which to retrieve subscriptions, etc..
     ///
     /// # Examples
     ///
