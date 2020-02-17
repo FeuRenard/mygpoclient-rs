@@ -1,3 +1,7 @@
+#![deny(missing_docs)]
+
+//! Provides different clients for communication with the service
+
 use reqwest::blocking::{Client, Response};
 use reqwest::IntoUrl;
 use serde::Serialize;
@@ -5,6 +9,7 @@ use serde::Serialize;
 const PACKAGE_NAME: &str = env!("CARGO_PKG_NAME");
 const PACKAGE_VERSION: &str = env!("CARGO_PKG_VERSION");
 
+/// Client authenticated with username and password
 #[derive(Debug, Clone)]
 pub struct AuthenticatedClient {
     pub(crate) username: String,
@@ -12,6 +17,7 @@ pub struct AuthenticatedClient {
     client: Client,
 }
 
+/// Device-specific [`AuthenticatedClient`](./struct.AuthenticatedClient.html)
 #[derive(Debug, Clone)]
 pub struct DeviceClient {
     pub(crate) device_id: String,
@@ -19,6 +25,7 @@ pub struct DeviceClient {
 }
 
 impl AuthenticatedClient {
+    /// Create [`AuthenticatedClient`](./struct.AuthenticatedClient.html) locally
     pub fn new(username: &str, password: &str) -> AuthenticatedClient {
         AuthenticatedClient {
             username: username.to_owned(),
@@ -82,6 +89,7 @@ impl AuthenticatedClient {
 }
 
 impl DeviceClient {
+    /// Create [`DeviceClient`](./struct.DeviceClient.html)
     pub fn new(username: &str, password: &str, device_id: &str) -> DeviceClient {
         DeviceClient {
             device_id: device_id.to_owned(),
