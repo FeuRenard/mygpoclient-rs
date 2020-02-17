@@ -1,3 +1,7 @@
+#![deny(missing_docs)]
+
+//! Manage podcast feed subscriptions
+
 use crate::client::AuthenticatedClient;
 use crate::client::DeviceClient;
 use crate::error::Error;
@@ -9,14 +13,23 @@ use std::hash::{Hash, Hasher};
 /// A Subscription as returned by [`Client::get_all_subscriptions`]
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Subscription {
+    /// feed URL
     pub url: String,
+    /// title of podcast
     pub title: String,
+    /// description of podcast
     pub description: String,
+    /// number of subscribers on service
     pub subscribers: u16,
+    /// number of subscribers on service one week before
     pub subscribers_last_week: u16,
+    /// URL to logo of podcast
     pub logo_url: Option<String>,
+    /// URL to a scaled logo of podcast
     pub scaled_logo_url: Option<String>,
+    /// website of podcast
     pub website: Option<String>,
+    /// service-internal feed URL
     pub mygpo_link: String,
 }
 
@@ -26,31 +39,36 @@ pub(crate) struct UploadSubscriptionChangesRequest {
     pub(crate) remove: Vec<String>,
 }
 
+/// Response to [`upload_subscription_changes`](./trait.SubscriptionChanges.html#tymethod.upload_subscription_changes)
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub struct UploadSubscriptionChangesResponse {
+    /// timestamp/ID that can be used for requesting changes since this upload in a subsequent API call
     pub timestamp: u64,
+    /// list of URLs that have been rewritten as a list of tuples
+    ///
+    /// The client SHOULD parse this list and update the local subscription list accordingly (the server only sanitizes the URL, so the semantic “content” should stay the same and therefore the client can simply update the URL value locally and use it for future updates.
     pub update_urls: Vec<(String, String)>,
 }
 
+/// Response to [`get_subscription_changes`](/trait.SubscriptionChanges.html#tymethod.get_subscription_changes)
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub struct GetSubscriptionChangesResponse {
+    /// The timestamp SHOULD be stored by the client in order to provide it in the since parameter in the next request.
     pub timestamp: u64,
+    /// URLs that should be added
     pub add: Vec<String>,
+    /// URLs that should be removed
     pub remove: Vec<String>,
 }
 
 /// [Subscriptions API](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html)
 pub trait Subscriptions: AllSubscriptions + SubscriptionsOfDevice + SubscriptionChanges {}
 
+/// see [`get_all_subscriptions`](./trait.AllSubscriptions.html#tymethod.get_all_subscriptions)
 pub trait AllSubscriptions {
     /// Get All Subscriptions
     ///
-    /// # Returns
-    ///
-    /// A `Result` which is:
-    ///
-    /// - `Ok`: A `Vec<Subscription>` of all subscriptions
-    /// - `Err`: A wrapped JSON or network error
+    /// This can be used to present the user a list of podcasts when the application starts for the first time.
     ///
     /// # Examples
     ///
@@ -74,15 +92,9 @@ pub trait AllSubscriptions {
     fn get_all_subscriptions(&self) -> Result<Vec<Subscription>, Error>;
 }
 
+/// Get and upload subscriptions of a device
 pub trait SubscriptionsOfDevice {
     /// Get Subscriptions of Device
-    ///
-    /// # Returns
-    ///
-    /// A `Result` which is:
-    ///
-    /// - `Ok`: A `Vec<String>` of all subscriptions as podcast feed URLs
-    /// - `Err`: A wrapped JSON or network error
     ///
     /// # Examples
     ///
@@ -105,31 +117,18 @@ pub trait SubscriptionsOfDevice {
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-subscriptions-of-device)
     fn get_subscriptions_of_device(&self) -> Result<Vec<String>, Error>;
 
-    /// Upload Subscriptions of Device
-    ///
-    /// # Parameters
-    ///
-    /// - `subscriptions`: A slice of podcast feed URLs as String representing the current subscription list
+    /// Upload the current subscription list of the given user to the server.
     ///
     /// # See also
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#upload-subscriptions-of-device)
     fn upload_subscriptions_of_device(&self, subscriptions: &[String]) -> Result<(), Error>;
 }
 
+/// Get or upload subscription changes
 pub trait SubscriptionChanges {
     /// Upload Subscription Changes
     ///
-    /// # Parameters
-    ///
-    /// - `add`: A slice of podcast feed URLs as String, that should be added to the device subscriptions
-    /// - `remove`: A slice of podcast feed URLs as String, that should be removed from the device subscriptions
-    ///
-    /// # Returns
-    ///
-    /// A `Result` which is:
-    ///
-    /// - `Ok`: A `UploadSubscriptionChangesResponse`
-    /// - `Err`: A wrapped JSON or network error
+    /// Only deltas are supported here. Timestamps are not supported, and are issued by the server.
     ///
     /// # Examples
     ///
@@ -164,13 +163,6 @@ pub trait SubscriptionChanges {
     ) -> Result<UploadSubscriptionChangesResponse, Error>;
 
     /// Get Subscription Changes
-    ///
-    /// # Returns
-    ///
-    /// A `Result` which is:
-    ///
-    /// - `Ok`: A `GetSubscriptionChangesResponse`
-    /// - `Err`: A wrapped JSON or network error
     ///
     /// # Examples
     ///
