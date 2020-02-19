@@ -101,7 +101,7 @@ pub trait UploadEpisodeActions {
     /// # Examples
     ///
     /// ```
-    /// use mygpoclient::AuthenticatedClient;
+    /// use mygpoclient::client::AuthenticatedClient;
     /// use mygpoclient::episode::EpisodeAction;
     /// use mygpoclient::episode::UploadEpisodeActions;
     /// use chrono::prelude::*;
@@ -117,7 +117,7 @@ pub trait UploadEpisodeActions {
     ///
     /// let response = client.upload_episode_actions(&episode_actions)?;
     /// #
-    /// # Ok::<(), mygpoclient::Error>(())
+    /// # Ok::<(), mygpoclient::error::Error>(())
     /// ```
     fn upload_episode_actions(
         &self,
@@ -144,7 +144,7 @@ pub trait GetEpisodeActions {
     /// # Examples
     ///
     /// ```
-    /// use mygpoclient::AuthenticatedClient;
+    /// use mygpoclient::client::AuthenticatedClient;
     /// use mygpoclient::episode::GetEpisodeActions;
     /// use chrono::prelude::*;
     ///
@@ -155,7 +155,7 @@ pub trait GetEpisodeActions {
     ///
     /// let response = client.get_episode_actions(Some("http://example.com/feed.rss"), None, false)?;
     /// #
-    /// # Ok::<(), mygpoclient::Error>(())
+    /// # Ok::<(), mygpoclient::error::Error>(())
     /// ```
     fn get_episode_actions(
         &self,

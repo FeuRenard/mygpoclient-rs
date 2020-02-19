@@ -3,9 +3,9 @@ extern crate mygpoclient;
 use std::env;
 use std::{thread, time};
 
+use mygpoclient::client::DeviceClient;
+use mygpoclient::error::Error;
 use mygpoclient::subscription::{AllSubscriptions, SubscriptionChanges, SubscriptionsOfDevice};
-use mygpoclient::DeviceClient;
-use mygpoclient::Error;
 
 const DUMMY_PODCAST_URL: &'static str = "http://ubuntupodcast.org/feed/";
 

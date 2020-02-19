@@ -42,7 +42,7 @@ pub trait Suggestions {
     /// # Examples
     ///
     /// ```
-    /// use mygpoclient::AuthenticatedClient;
+    /// use mygpoclient::client::AuthenticatedClient;
     /// use mygpoclient::suggestion::Suggestions;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
@@ -55,7 +55,7 @@ pub trait Suggestions {
     ///
     /// assert!(suggestions.len() <= max_results as usize);
     ///
-    /// # Ok::<(), mygpoclient::Error>(())
+    /// # Ok::<(), mygpoclient::error::Error>(())
     /// ```
     ///
     /// # See also

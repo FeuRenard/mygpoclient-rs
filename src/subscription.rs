@@ -73,7 +73,7 @@ pub trait AllSubscriptions {
     /// # Examples
     ///
     /// ```
-    /// use mygpoclient::AuthenticatedClient;
+    /// use mygpoclient::client::AuthenticatedClient;
     /// use mygpoclient::subscription::AllSubscriptions;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
@@ -83,7 +83,7 @@ pub trait AllSubscriptions {
     ///
     /// let subscriptions = client.get_all_subscriptions()?;
     /// #
-    /// # Ok::<(), mygpoclient::Error>(())
+    /// # Ok::<(), mygpoclient::error::Error>(())
     /// ```
     ///
     /// # See also
@@ -99,7 +99,7 @@ pub trait SubscriptionsOfDevice {
     /// # Examples
     ///
     /// ```
-    /// use mygpoclient::DeviceClient;
+    /// use mygpoclient::client::DeviceClient;
     /// use mygpoclient::subscription::SubscriptionsOfDevice;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
@@ -110,7 +110,7 @@ pub trait SubscriptionsOfDevice {
     ///
     /// let subscriptions = client.get_subscriptions_of_device()?;
     /// #
-    /// # Ok::<(), mygpoclient::Error>(())
+    /// # Ok::<(), mygpoclient::error::Error>(())
     /// ```
     ///
     /// # See also
@@ -133,7 +133,7 @@ pub trait SubscriptionChanges {
     /// # Examples
     ///
     /// ```
-    /// use mygpoclient::DeviceClient;
+    /// use mygpoclient::client::DeviceClient;
     /// use mygpoclient::subscription::SubscriptionChanges;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
@@ -150,7 +150,7 @@ pub trait SubscriptionChanges {
     /// let remove = vec![url3];
     /// let response = client.upload_subscription_changes(&add, &remove)?;
     /// #
-    /// # Ok::<(), mygpoclient::Error>(())
+    /// # Ok::<(), mygpoclient::error::Error>(())
     /// ```
     ///
     /// # See also
@@ -167,7 +167,7 @@ pub trait SubscriptionChanges {
     /// # Examples
     ///
     /// ```
-    /// use mygpoclient::DeviceClient;
+    /// use mygpoclient::client::DeviceClient;
     /// use mygpoclient::subscription::SubscriptionChanges;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
@@ -178,7 +178,7 @@ pub trait SubscriptionChanges {
     ///
     /// let subscription_changes = client.get_subscription_changes(0)?;
     /// #
-    /// # Ok::<(), mygpoclient::Error>(())
+    /// # Ok::<(), mygpoclient::error::Error>(())
     /// ```
     ///
     /// # See also

@@ -66,7 +66,7 @@ pub trait UpdateDeviceData {
     /// # Examples
     ///
     /// ```
-    /// use mygpoclient::DeviceClient;
+    /// use mygpoclient::client::DeviceClient;
     /// use mygpoclient::device::{DeviceType,UpdateDeviceData};
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
@@ -76,7 +76,7 @@ pub trait UpdateDeviceData {
     /// let client = DeviceClient::new(&username, &password, &deviceid);
     ///
     /// client.update_device_data("My Phone".to_owned(), DeviceType::Mobile)?;
-    /// # Ok::<(), mygpoclient::Error>(())
+    /// # Ok::<(), mygpoclient::error::Error>(())
     /// ```
     ///
     /// # See also
@@ -98,7 +98,7 @@ pub trait ListDevices {
     /// # Examples
     ///
     /// ```
-    /// use mygpoclient::AuthenticatedClient;
+    /// use mygpoclient::client::AuthenticatedClient;
     /// use mygpoclient::device::ListDevices;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
@@ -108,7 +108,7 @@ pub trait ListDevices {
     ///
     /// let devices = client.list_devices()?;
     ///
-    /// # Ok::<(), mygpoclient::Error>(())
+    /// # Ok::<(), mygpoclient::error::Error>(())
     /// ```
     ///
     /// # See also
