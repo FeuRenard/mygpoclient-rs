@@ -156,4 +156,25 @@ mod tests {
 
         assert_eq!(hasher1.finish(), hasher2.finish());
     }
+
+    #[test]
+    fn display() {
+        let suggestion = Suggestion {
+            url: String::from("http://goinglinux.com/mp3podcast.xml"),
+            website: String::from("http://goinglinux.com"),
+            mygpo_link: String::from("http://gpodder.net/podcast/11171"),
+            description: String::from("Going Linux"),
+            subscribers: 571,
+            title: String::from("Going Linux"),
+            subscribers_last_week: 571,
+            logo_url: Some(String::from(
+                "http://goinglinux.com/images/GoingLinux80.png",
+            )),
+        };
+
+        assert_eq!(
+            "Going Linux: Going Linux <http://goinglinux.com/mp3podcast.xml>".to_owned(),
+            format!("{}", suggestion)
+        );
+    }
 }
