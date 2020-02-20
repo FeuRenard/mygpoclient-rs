@@ -251,4 +251,19 @@ mod tests {
 
         assert_ne!(hasher1.finish(), hasher2.finish());
     }
+
+    #[test]
+    fn display() {
+        let device = Device {
+            id: String::from("abcdef"),
+            caption: String::from("gPodder on my Lappy"),
+            device_type: DeviceType::Laptop,
+            subscriptions: 27,
+        };
+
+        assert_eq!(
+            "Laptop gPodder on my Lappy (id=abcdef)".to_owned(),
+            format!("{}", device)
+        );
+    }
 }
