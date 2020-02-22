@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-
 //! Module for [`EpisodeActions`](./episode/trait.EpisodeActions.html)
 
 use crate::client::AuthenticatedClient;

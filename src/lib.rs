@@ -1,3 +1,17 @@
+/*!
+
+This is a client library for the [gpodder.net](https://gpodder.net/) API
+
+# Usage
+
+For any request you need a [client](./client/index.html#structs).
+
+All supported API features are represented by a trait.
+
+A client's implemented traits mark its capabilities.
+
+*/
+
 #![deny(
     clippy::all,
     warnings,
@@ -8,7 +22,7 @@
     rustdoc,
     unused,
     macro_use_extern_crate,
-// TODO    missing_docs,
+    missing_docs,
     non_ascii_idents,
     single_use_lifetimes,
     trivial_casts,

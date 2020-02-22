@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-
 //! Provides different clients for communication with the service
 
 use reqwest::blocking::{Client, Response};

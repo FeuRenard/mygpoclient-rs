@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-
 //! Manage [`Device`](./device/struct.Device.html)`s`
 
 use crate::client::{AuthenticatedClient, DeviceClient};

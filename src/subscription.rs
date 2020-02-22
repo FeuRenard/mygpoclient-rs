@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-
 //! Manage podcast feed subscriptions
 
 use crate::client::AuthenticatedClient;

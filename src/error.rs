@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-
 //! Error handling
 
 /// Error resulting from an API request

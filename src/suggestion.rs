@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-
 //! Retrieve [`Suggestions`](./suggestion/trait.Suggestions.html)
 
 use crate::client::AuthenticatedClient;
