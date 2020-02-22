@@ -1,4 +1,4 @@
-//! Retrieve [`Suggestions`](./suggestion/trait.Suggestions.html)
+//! [Suggestions API](https://gpoddernet.readthedocs.io/en/latest/api/reference/suggestions.html)
 
 use crate::client::AuthenticatedClient;
 use crate::client::DeviceClient;
@@ -29,7 +29,7 @@ pub struct Suggestion {
     pub logo_url: Option<String>,
 }
 
-/// [Suggestions API](https://gpoddernet.readthedocs.io/en/latest/api/reference/suggestions.html)
+/// see [`retrieve_suggested_podcasts`](./trait.Suggestions.html#tymethod.retrieve_suggested_podcasts)
 pub trait Suggestions {
     /// Retrieve Suggested Podcasts
     ///

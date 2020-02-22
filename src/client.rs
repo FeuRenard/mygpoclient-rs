@@ -1,4 +1,4 @@
-//! Provides different clients for communication with the service
+//! Clients for communication with the service
 
 use reqwest::blocking::{Client, Response};
 use reqwest::IntoUrl;

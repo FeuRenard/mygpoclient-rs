@@ -1,4 +1,4 @@
-//! Manage podcast feed subscriptions
+//! [Subscriptions API](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html)
 
 use crate::client::AuthenticatedClient;
 use crate::client::DeviceClient;
@@ -58,9 +58,6 @@ pub struct GetSubscriptionChangesResponse {
     /// URLs that should be removed
     pub remove: Vec<String>,
 }
-
-/// [Subscriptions API](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html)
-pub trait Subscriptions: GetAllSubscriptions + SubscriptionsOfDevice + SubscriptionChanges {}
 
 /// see [`get_all_subscriptions`](./trait.GetAllSubscriptions.html#tymethod.get_all_subscriptions)
 pub trait GetAllSubscriptions {

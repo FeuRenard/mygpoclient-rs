@@ -1,4 +1,4 @@
-//! Manage [`Device`](./device/struct.Device.html)`s`
+//! [Device API](https://gpoddernet.readthedocs.io/en/latest/api/reference/devices.html)
 
 use crate::client::{AuthenticatedClient, DeviceClient};
 use crate::error::Error;
@@ -48,8 +48,6 @@ pub(crate) struct DeviceData {
     pub(crate) device_type: Option<DeviceType>,
 }
 
-/// [Device API](https://gpoddernet.readthedocs.io/en/latest/api/reference/devices.html)
-pub trait Devices: UpdateDeviceData + ListDevices {}
 // TODO https://gpoddernet.readthedocs.io/en/latest/api/reference/devices.html#get-device-updates
 
 /// see [`update_device_data`](./trait.UpdateDeviceData.html#tymethod.update_device_data)

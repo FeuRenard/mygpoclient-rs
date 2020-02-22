@@ -1,4 +1,15 @@
-//! Module for [`EpisodeActions`](./episode/trait.EpisodeActions.html)
+/*!
+Episode Actions API
+
+The episode actions API is used to synchronize episode-related events between individual devices. Clients can send and store events on the webservice which makes it available to other clients. The following types of actions are currently accepted by the API: download, play, delete, new. Additional types can be requested on the Mailing List.
+
+Example use cases
+- Clients can send download and delete events so that other clients know where a file has already been downloaded.
+- Clients can send play events with position information so that other clients know where to start playback.
+- Clients can send new states to reset previous events. This state needs to be interpreted by receiving clients and does not delete any information on the webservice.
+
+[gpodder.net API Documentation]: https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html
+*/
 
 use crate::client::AuthenticatedClient;
 use crate::error::Error;
@@ -75,18 +86,6 @@ pub struct GetEpisodeActionsResponse {
     /// new timestamp that the client SHOULD save and use for subsequent requests
     pub timestamp: u64,
 }
-
-/// Episode Actions API
-///
-/// The episode actions API is used to synchronize episode-related events between individual devices. Clients can send and store events on the webservice which makes it available to other clients. The following types of actions are currently accepted by the API: download, play, delete, new. Additional types can be requested on the Mailing List.
-///
-/// Example use cases
-/// - Clients can send download and delete events so that other clients know where a file has already been downloaded.
-/// - Clients can send play events with position information so that other clients know where to start playback.
-/// - Clients can send new states to reset previous events. This state needs to be interpreted by receiving clients and does not delete any information on the webservice.
-///
-/// [gpodder.net API Documentation]: https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html
-pub trait EpisodeActions: UploadEpisodeActions + GetEpisodeActions {}
 
 /// see [`upload_episode_actions`](./trait.UploadEpisodeActions.html#tymethod.upload_episode_actions)
 pub trait UploadEpisodeActions {
@@ -304,5 +303,3 @@ impl GetEpisodeActions for AuthenticatedClient {
             .json()?)
     }
 }
-
-impl EpisodeActions for AuthenticatedClient {}
