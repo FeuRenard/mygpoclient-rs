@@ -60,10 +60,10 @@ pub struct GetSubscriptionChangesResponse {
 }
 
 /// [Subscriptions API](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html)
-pub trait Subscriptions: AllSubscriptions + SubscriptionsOfDevice + SubscriptionChanges {}
+pub trait Subscriptions: GetAllSubscriptions + SubscriptionsOfDevice + SubscriptionChanges {}
 
-/// see [`get_all_subscriptions`](./trait.AllSubscriptions.html#tymethod.get_all_subscriptions)
-pub trait AllSubscriptions {
+/// see [`get_all_subscriptions`](./trait.GetAllSubscriptions.html#tymethod.get_all_subscriptions)
+pub trait GetAllSubscriptions {
     /// Get All Subscriptions
     ///
     /// This can be used to present the user a list of podcasts when the application starts for the first time.
@@ -72,7 +72,7 @@ pub trait AllSubscriptions {
     ///
     /// ```
     /// use mygpoclient::client::AuthenticatedClient;
-    /// use mygpoclient::subscription::AllSubscriptions;
+    /// use mygpoclient::subscription::GetAllSubscriptions;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
@@ -188,7 +188,7 @@ pub trait SubscriptionChanges {
     ) -> Result<GetSubscriptionChangesResponse, Error>;
 }
 
-impl AllSubscriptions for AuthenticatedClient {
+impl GetAllSubscriptions for AuthenticatedClient {
     fn get_all_subscriptions(&self) -> Result<Vec<Subscription>, Error> {
         Ok(self
             .get(&format!(
@@ -199,7 +199,7 @@ impl AllSubscriptions for AuthenticatedClient {
     }
 }
 
-impl AllSubscriptions for DeviceClient {
+impl GetAllSubscriptions for DeviceClient {
     fn get_all_subscriptions(&self) -> Result<Vec<Subscription>, Error> {
         self.as_ref().get_all_subscriptions()
     }

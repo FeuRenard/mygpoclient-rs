@@ -5,7 +5,7 @@ use std::{thread, time};
 
 use mygpoclient::client::DeviceClient;
 use mygpoclient::error::Error;
-use mygpoclient::subscription::{AllSubscriptions, SubscriptionChanges, SubscriptionsOfDevice};
+use mygpoclient::subscription::{GetAllSubscriptions, SubscriptionChanges, SubscriptionsOfDevice};
 
 const DUMMY_PODCAST_URL: &'static str = "http://ubuntupodcast.org/feed/";
 
