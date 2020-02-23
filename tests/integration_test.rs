@@ -115,7 +115,7 @@ fn test_subscription_changes() -> Result<(), Error> {
         1,
         add_or_remove_one
             .iter()
-            .filter(|&url| *url == get_dummy_url())
+            .filter(|&url| *url == Url::parse(DUMMY_PODCAST_URL).unwrap())
             .count()
     );
 

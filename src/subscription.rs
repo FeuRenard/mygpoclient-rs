@@ -55,9 +55,9 @@ pub struct GetSubscriptionChangesResponse {
     /// The timestamp SHOULD be stored by the client in order to provide it in the since parameter in the next request.
     pub timestamp: u64,
     /// URLs that should be added
-    pub add: Vec<String>,
+    pub add: Vec<Url>,
     /// URLs that should be removed
-    pub remove: Vec<String>,
+    pub remove: Vec<Url>,
 }
 
 /// see [`get_all_subscriptions`](./trait.GetAllSubscriptions.html#tymethod.get_all_subscriptions)
