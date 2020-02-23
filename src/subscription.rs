@@ -7,12 +7,13 @@ use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::fmt;
 use std::hash::{Hash, Hasher};
+use url::Url;
 
-/// A Subscription as returned by [`Client::get_all_subscriptions`]
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+/// A Subscription as returned by [`get_all_subscriptions`](./trait.GetAllSubscriptions.html#tymethod.get_all_subscriptions)
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Subscription {
     /// feed URL
-    pub url: String,
+    pub url: Url,
     /// title of podcast
     pub title: String,
     /// description of podcast
@@ -315,11 +316,12 @@ mod tests {
     use std::cmp::Ordering;
     use std::collections::hash_map::DefaultHasher;
     use std::hash::{Hash, Hasher};
+    use url::Url;
 
     #[test]
     fn equal_subscription_means_equal_hash() {
         let subscription1 = Subscription {
-            url: String::from("http://goinglinux.com/mp3podcast.xml"),
+            url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
             website: Some(String::from("http://www.linuxgeekdom.com")),
             mygpo_link: String::from("http://gpodder.net/podcast/64439"),
             description: String::from("Linux Geekdom"),
@@ -330,7 +332,7 @@ mod tests {
             scaled_logo_url: None,
         };
         let subscription2 = Subscription {
-            url: String::from("http://goinglinux.com/mp3podcast.xml"),
+            url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
             website: Some(String::from("http://goinglinux.com")),
             mygpo_link: String::from("http://gpodder.net/podcast/11171"),
             description: String::from("Going Linux"),
@@ -363,7 +365,7 @@ mod tests {
     #[test]
     fn display() {
         let subscription = Subscription {
-            url: String::from("http://goinglinux.com/mp3podcast.xml"),
+            url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
             website: Some(String::from("http://goinglinux.com")),
             mygpo_link: String::from("http://gpodder.net/podcast/11171"),
             description: String::from("Going Linux"),

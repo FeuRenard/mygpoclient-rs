@@ -3,6 +3,8 @@ extern crate mygpoclient;
 use std::env;
 use std::{thread, time};
 
+use url::Url;
+
 use mygpoclient::client::DeviceClient;
 use mygpoclient::error::Error;
 use mygpoclient::subscription::{GetAllSubscriptions, SubscriptionChanges, SubscriptionsOfDevice};
@@ -43,7 +45,7 @@ fn add_and_assert_contains(
         client
             .get_all_subscriptions()?
             .iter()
-            .filter(|s| s.url == get_dummy_url())
+            .filter(|s| s.url == Url::parse(DUMMY_PODCAST_URL).unwrap())
             .count()
     );
 
