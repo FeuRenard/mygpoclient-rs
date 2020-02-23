@@ -8,7 +8,7 @@ use std::cmp::Ordering;
 use std::fmt;
 use std::hash::{Hash, Hasher};
 
-/// A podcast suggestion as returned by [`retrieve_suggested_podcasts`](/trait.Suggestions.html#tymethod.retrieve_suggested_podcasts)
+/// A podcast suggestion as returned by [`retrieve_suggested_podcasts`](/trait.RetrieveSuggestedPodcasts.html#tymethod.retrieve_suggested_podcasts)
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Suggestion {
     /// website of podcast
@@ -29,8 +29,8 @@ pub struct Suggestion {
     pub logo_url: Option<String>,
 }
 
-/// see [`retrieve_suggested_podcasts`](./trait.Suggestions.html#tymethod.retrieve_suggested_podcasts)
-pub trait Suggestions {
+/// see [`retrieve_suggested_podcasts`](./trait.RetrieveSuggestedPodcasts.html#tymethod.retrieve_suggested_podcasts)
+pub trait RetrieveSuggestedPodcasts {
     /// Retrieve Suggested Podcasts
     ///
     /// Download a list of podcasts that the user has not yet subscribed to (by checking all server-side subscription lists) and that might be interesting to the user based on existing subscriptions (again on all server-side subscription lists).
@@ -41,7 +41,7 @@ pub trait Suggestions {
     ///
     /// ```
     /// use mygpoclient::client::AuthenticatedClient;
-    /// use mygpoclient::suggestion::Suggestions;
+    /// use mygpoclient::suggestion::RetrieveSuggestedPodcasts;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
@@ -62,7 +62,7 @@ pub trait Suggestions {
     fn retrieve_suggested_podcasts(&self, max_results: u8) -> Result<Vec<Suggestion>, Error>;
 }
 
-impl Suggestions for AuthenticatedClient {
+impl RetrieveSuggestedPodcasts for AuthenticatedClient {
     fn retrieve_suggested_podcasts(&self, max_results: u8) -> Result<Vec<Suggestion>, Error> {
         Ok(self
             .get(&format!(
@@ -73,7 +73,7 @@ impl Suggestions for AuthenticatedClient {
     }
 }
 
-impl Suggestions for DeviceClient {
+impl RetrieveSuggestedPodcasts for DeviceClient {
     fn retrieve_suggested_podcasts(&self, max_results: u8) -> Result<Vec<Suggestion>, Error> {
         self.as_ref().retrieve_suggested_podcasts(max_results)
     }
