@@ -117,7 +117,7 @@ pub trait SubscriptionsOfDevice {
     ///
     /// # See also
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#upload-subscriptions-of-device)
-    fn upload_subscriptions_of_device(&self, subscriptions: &[String]) -> Result<(), Error>;
+    fn upload_subscriptions_of_device(&self, subscriptions: &[Url]) -> Result<(), Error>;
 }
 
 /// Get or upload subscription changes
@@ -213,7 +213,7 @@ impl SubscriptionsOfDevice for DeviceClient {
             .json()?) // TODO handle response?
     }
 
-    fn upload_subscriptions_of_device(&self, subscriptions: &[String]) -> Result<(), Error> {
+    fn upload_subscriptions_of_device(&self, subscriptions: &[Url]) -> Result<(), Error> {
         self.put(
             &format!(
                 "https://gpodder.net/subscriptions/{}/{}.json",

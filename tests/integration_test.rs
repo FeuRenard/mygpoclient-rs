@@ -35,14 +35,7 @@ fn add_and_assert_contains(
     client: &DeviceClient,
 ) -> Result<Vec<Url>, Error> {
     subscriptions.push(Url::parse(DUMMY_PODCAST_URL).unwrap());
-    client.upload_subscriptions_of_device(
-        subscriptions
-            .iter()
-            .cloned()
-            .map(|url| url.into_string())
-            .collect::<Vec<String>>()
-            .as_ref(),
-    )?;
+    client.upload_subscriptions_of_device(&subscriptions)?;
 
     let subscriptions_after_addition = client.get_subscriptions_of_device()?;
     assert!(subscriptions_after_addition.contains(&Url::parse(DUMMY_PODCAST_URL).unwrap()));
@@ -68,8 +61,7 @@ fn remove_and_assert_gone(
             .iter()
             .filter(|&url| url != &Url::parse(DUMMY_PODCAST_URL).unwrap())
             .cloned()
-            .map(|url| url.into_string())
-            .collect::<Vec<String>>()
+            .collect::<Vec<Url>>()
             .as_ref(),
     )?;
 
