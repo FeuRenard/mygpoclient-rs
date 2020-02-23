@@ -6,19 +6,19 @@ use std::fmt;
 #[derive(Debug)]
 pub enum Error {
     /// Error originating from reqwest crate
-    NetworkError(reqwest::Error),
+    ReqwestError(reqwest::Error),
 }
 
 impl From<reqwest::Error> for Error {
     fn from(error: reqwest::Error) -> Self {
-        Error::NetworkError(error)
+        Error::ReqwestError(error)
     }
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match &self {
-            Error::NetworkError(reqwest_error) => reqwest_error.fmt(f),
+            Error::ReqwestError(reqwest_error) => reqwest_error.fmt(f),
         }
     }
 }
