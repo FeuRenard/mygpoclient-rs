@@ -23,13 +23,13 @@ pub struct Subscription {
     /// number of subscribers on service one week before
     pub subscribers_last_week: u16,
     /// URL to logo of podcast
-    pub logo_url: Option<String>,
+    pub logo_url: Option<Url>,
     /// URL to a scaled logo of podcast
-    pub scaled_logo_url: Option<String>,
+    pub scaled_logo_url: Option<Url>,
     /// website of podcast
-    pub website: Option<String>,
+    pub website: Option<Url>,
     /// service-internal feed URL
-    pub mygpo_link: String,
+    pub mygpo_link: Url,
 }
 
 #[derive(Serialize)]
@@ -322,8 +322,8 @@ mod tests {
     fn equal_subscription_means_equal_hash() {
         let subscription1 = Subscription {
             url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
-            website: Some(String::from("http://www.linuxgeekdom.com")),
-            mygpo_link: String::from("http://gpodder.net/podcast/64439"),
+            website: Some(Url::parse("http://www.linuxgeekdom.com").unwrap()),
+            mygpo_link: Url::parse("http://gpodder.net/podcast/64439").unwrap(),
             description: String::from("Linux Geekdom"),
             subscribers: 0,
             title: String::from("Linux Geekdom"),
@@ -333,18 +333,16 @@ mod tests {
         };
         let subscription2 = Subscription {
             url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
-            website: Some(String::from("http://goinglinux.com")),
-            mygpo_link: String::from("http://gpodder.net/podcast/11171"),
+            website: Some(Url::parse("http://goinglinux.com").unwrap()),
+            mygpo_link: Url::parse("http://gpodder.net/podcast/11171").unwrap(),
             description: String::from("Going Linux"),
             subscribers: 571,
             title: String::from("Going Linux"),
             subscribers_last_week: 571,
-            logo_url: Some(String::from(
-                "http://goinglinux.com/images/GoingLinux80.png",
-            )),
-            scaled_logo_url: Some(String::from(
-                "http://goinglinux.com/images/GoingLinux80.png",
-            )),
+            logo_url: Some(Url::parse("http://goinglinux.com/images/GoingLinux80.png").unwrap()),
+            scaled_logo_url: Some(
+                Url::parse("http://goinglinux.com/images/GoingLinux80.png").unwrap(),
+            ),
         };
 
         assert_eq!(subscription1, subscription2);
@@ -366,18 +364,16 @@ mod tests {
     fn display() {
         let subscription = Subscription {
             url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
-            website: Some(String::from("http://goinglinux.com")),
-            mygpo_link: String::from("http://gpodder.net/podcast/11171"),
+            website: Some(Url::parse("http://goinglinux.com").unwrap()),
+            mygpo_link: Url::parse("http://gpodder.net/podcast/11171").unwrap(),
             description: String::from("Going Linux"),
             subscribers: 571,
             title: String::from("Going Linux"),
             subscribers_last_week: 571,
-            logo_url: Some(String::from(
-                "http://goinglinux.com/images/GoingLinux80.png",
-            )),
-            scaled_logo_url: Some(String::from(
-                "http://goinglinux.com/images/GoingLinux80.png",
-            )),
+            logo_url: Some(Url::parse("http://goinglinux.com/images/GoingLinux80.png").unwrap()),
+            scaled_logo_url: Some(
+                Url::parse("http://goinglinux.com/images/GoingLinux80.png").unwrap(),
+            ),
         };
 
         assert_eq!(
