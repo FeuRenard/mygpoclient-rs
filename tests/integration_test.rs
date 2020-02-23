@@ -21,7 +21,7 @@ fn test_subscription() -> Result<(), Error> {
 
     let subscriptions = client.get_subscriptions_of_device()?;
 
-    if subscriptions.contains(&get_dummy_url()) {
+    if subscriptions.contains(&Url::parse(DUMMY_PODCAST_URL).unwrap()) {
         add_and_assert_contains(remove_and_assert_gone(subscriptions, &client)?, &client)?;
     } else {
         remove_and_assert_gone(add_and_assert_contains(subscriptions, &client)?, &client)?;
@@ -31,14 +31,21 @@ fn test_subscription() -> Result<(), Error> {
 }
 
 fn add_and_assert_contains(
-    mut subscriptions: Vec<String>,
+    mut subscriptions: Vec<Url>,
     client: &DeviceClient,
-) -> Result<Vec<String>, Error> {
-    subscriptions.push(get_dummy_url());
-    client.upload_subscriptions_of_device(&subscriptions)?;
+) -> Result<Vec<Url>, Error> {
+    subscriptions.push(Url::parse(DUMMY_PODCAST_URL).unwrap());
+    client.upload_subscriptions_of_device(
+        subscriptions
+            .iter()
+            .cloned()
+            .map(|url| url.into_string())
+            .collect::<Vec<String>>()
+            .as_ref(),
+    )?;
 
     let subscriptions_after_addition = client.get_subscriptions_of_device()?;
-    assert!(subscriptions_after_addition.contains(&get_dummy_url()));
+    assert!(subscriptions_after_addition.contains(&Url::parse(DUMMY_PODCAST_URL).unwrap()));
 
     assert_eq!(
         1,
@@ -53,20 +60,21 @@ fn add_and_assert_contains(
 }
 
 fn remove_and_assert_gone(
-    subscriptions: Vec<String>,
+    subscriptions: Vec<Url>,
     client: &DeviceClient,
-) -> Result<Vec<String>, Error> {
+) -> Result<Vec<Url>, Error> {
     client.upload_subscriptions_of_device(
         subscriptions
             .iter()
-            .filter(|&s| s != DUMMY_PODCAST_URL)
+            .filter(|&url| url != &Url::parse(DUMMY_PODCAST_URL).unwrap())
             .cloned()
+            .map(|url| url.into_string())
             .collect::<Vec<String>>()
             .as_ref(),
     )?;
 
     let subscriptions_after_removal = client.get_subscriptions_of_device()?;
-    assert!(!subscriptions_after_removal.contains(&get_dummy_url()));
+    assert!(!subscriptions_after_removal.contains(&Url::parse(DUMMY_PODCAST_URL).unwrap()));
     Ok(subscriptions_after_removal)
 }
 
@@ -86,7 +94,7 @@ fn test_subscription_changes() -> Result<(), Error> {
 
     let one_second = time::Duration::from_secs(1);
 
-    let is_remove_first = subscriptions.contains(&get_dummy_url());
+    let is_remove_first = subscriptions.contains(&Url::parse(DUMMY_PODCAST_URL).unwrap());
     let last_timestamp = if is_remove_first {
         remove_changes(&client)?;
         thread::sleep(one_second);
