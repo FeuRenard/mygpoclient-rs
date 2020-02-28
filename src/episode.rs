@@ -144,19 +144,20 @@ pub trait GetEpisodeActions {
     /// use mygpoclient::client::AuthenticatedClient;
     /// use mygpoclient::episode::GetEpisodeActions;
     /// use chrono::prelude::*;
+    /// use url::Url;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
     /// #
     /// let client = AuthenticatedClient::new(&username, &password);
     ///
-    /// let response = client.get_episode_actions(Some("http://example.com/feed.rss"), None, false)?;
+    /// let response = client.get_episode_actions(Some(Url::parse("http://example.com/feed.rss").unwrap()), None, false)?;
     /// #
     /// # Ok::<(), mygpoclient::error::Error>(())
     /// ```
     fn get_episode_actions(
         &self,
-        podcast: Option<&str>,
+        podcast: Option<Url>,
         since: Option<u64>,
         aggregated: bool,
     ) -> Result<GetEpisodeActionsResponse, Error>;
@@ -261,7 +262,7 @@ impl UploadEpisodeActions for AuthenticatedClient {
 impl GetEpisodeActions for AuthenticatedClient {
     fn get_episode_actions(
         &self,
-        podcast: Option<&str>,
+        podcast: Option<Url>,
         since: Option<u64>,
         aggregated: bool,
     ) -> Result<GetEpisodeActionsResponse, Error> {
