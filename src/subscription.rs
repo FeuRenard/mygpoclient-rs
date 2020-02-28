@@ -46,7 +46,7 @@ pub struct UploadSubscriptionChangesResponse {
     /// list of URLs that have been rewritten as a list of tuples
     ///
     /// The client SHOULD parse this list and update the local subscription list accordingly (the server only sanitizes the URL, so the semantic “content” should stay the same and therefore the client can simply update the URL value locally and use it for future updates.
-    pub update_urls: Vec<(String, String)>,
+    pub update_urls: Vec<(Url, Url)>,
 }
 
 /// Response to [`get_subscription_changes`](/trait.SubscriptionChanges.html#tymethod.get_subscription_changes)

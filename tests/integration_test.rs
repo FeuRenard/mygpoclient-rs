@@ -123,21 +123,10 @@ fn test_subscription_changes() -> Result<(), Error> {
 }
 
 fn add_changes(client: &DeviceClient) -> Result<u64, Error> {
-    let dummy_podcast_url_with_spaces = format!("{}  ", DUMMY_PODCAST_URL);
-    let add = vec![dummy_podcast_url_with_spaces.clone()];
+    let add = vec![get_dummy_url()];
     let remove = vec![];
 
     let response = client.upload_subscription_changes(&add, &remove)?;
-
-    assert_eq!(
-        1,
-        response
-            .update_urls
-            .iter()
-            .filter(|&update_url| *update_url
-                == (dummy_podcast_url_with_spaces.clone(), get_dummy_url()))
-            .count()
-    );
 
     Ok(response.timestamp)
 }
