@@ -70,10 +70,6 @@ fn remove_and_assert_gone(
     Ok(subscriptions_after_removal)
 }
 
-fn get_dummy_url() -> String {
-    DUMMY_PODCAST_URL.to_owned()
-}
-
 #[test]
 fn test_subscription_changes() -> Result<(), Error> {
     let username = env::var("GPODDER_NET_USERNAME").unwrap();
@@ -123,7 +119,7 @@ fn test_subscription_changes() -> Result<(), Error> {
 }
 
 fn add_changes(client: &DeviceClient) -> Result<u64, Error> {
-    let add = vec![get_dummy_url()];
+    let add = vec![Url::parse(DUMMY_PODCAST_URL).unwrap()];
     let remove = vec![];
 
     let response = client.upload_subscription_changes(&add, &remove)?;
@@ -133,7 +129,7 @@ fn add_changes(client: &DeviceClient) -> Result<u64, Error> {
 
 fn remove_changes(client: &DeviceClient) -> Result<u64, Error> {
     let add = vec![];
-    let remove = vec![get_dummy_url()];
+    let remove = vec![Url::parse(DUMMY_PODCAST_URL).unwrap()];
 
     let response = client.upload_subscription_changes(&add, &remove)?;
 

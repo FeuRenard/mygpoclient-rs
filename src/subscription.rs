@@ -34,8 +34,8 @@ pub struct Subscription {
 
 #[derive(Serialize)]
 pub(crate) struct UploadSubscriptionChangesRequest {
-    pub(crate) add: Vec<String>,
-    pub(crate) remove: Vec<String>,
+    pub(crate) add: Vec<Url>,
+    pub(crate) remove: Vec<Url>,
 }
 
 /// Response to [`upload_subscription_changes`](./trait.SubscriptionChanges.html#tymethod.upload_subscription_changes)
@@ -131,6 +131,7 @@ pub trait SubscriptionChanges {
     /// ```
     /// use mygpoclient::client::DeviceClient;
     /// use mygpoclient::subscription::SubscriptionChanges;
+    /// use url::Url;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
@@ -138,9 +139,9 @@ pub trait SubscriptionChanges {
     /// #
     /// let client = DeviceClient::new(&username, &password, &deviceid);
     ///
-    /// # let url1 = "http://example.com/feed.rss".to_owned();
-    /// # let url2 = "http://example.org/podcast.php".to_owned();
-    /// # let url3 = "http://example.net/foo.xml".to_owned();
+    /// # let url1 = Url::parse("http://example.com/feed.rss").unwrap();
+    /// # let url2 = Url::parse("http://example.org/podcast.php").unwrap();
+    /// # let url3 = Url::parse("http://example.net/foo.xml").unwrap();
     /// #
     /// let add = vec![url1,url2];
     /// let remove = vec![url3];
@@ -154,8 +155,8 @@ pub trait SubscriptionChanges {
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#upload-subscription-changes)
     fn upload_subscription_changes(
         &self,
-        add: &[String],
-        remove: &[String],
+        add: &[Url],
+        remove: &[Url],
     ) -> Result<UploadSubscriptionChangesResponse, Error>;
 
     /// Get Subscription Changes
@@ -228,8 +229,8 @@ impl SubscriptionsOfDevice for DeviceClient {
 impl SubscriptionChanges for DeviceClient {
     fn upload_subscription_changes(
         &self,
-        add: &[String],
-        remove: &[String],
+        add: &[Url],
+        remove: &[Url],
     ) -> Result<UploadSubscriptionChangesResponse, Error> {
         let input = UploadSubscriptionChangesRequest {
             add: add.to_owned(),
