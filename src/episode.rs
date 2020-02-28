@@ -72,7 +72,7 @@ pub struct UploadEpisodeActionsResponse {
     /// list of URLs that have been rewritten (sanitized, see bug:747 and bug:862) as a list of tuples. The client SHOULD parse this list and update the local subscription and episode list accordingly (the server only sanitizes the URL, so the semantic “content” should stay the same and therefore the client can simply update the URL value locally and use it for future updates.
     ///
     /// URLs that are not allowed (currently all URLs that contain non-ASCII characters or don’t start with either http or https) are rewritten to the empty string and are ignored by the Webservice.
-    pub update_urls: Vec<(String, String)>,
+    pub update_urls: Vec<(Url, Url)>,
 }
 
 /// Response to [`get_episode_actions`](./trait.GetEpisodeActions.html#tymethod.get_episode_actions)
