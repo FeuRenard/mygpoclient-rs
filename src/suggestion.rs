@@ -7,14 +7,15 @@ use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::fmt;
 use std::hash::{Hash, Hasher};
+use url::Url;
 
 /// A podcast suggestion as returned by [`retrieve_suggested_podcasts`](/trait.RetrieveSuggestedPodcasts.html#tymethod.retrieve_suggested_podcasts)
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Suggestion {
     /// website of podcast
-    pub website: String,
+    pub website: Url,
     /// service-internal feed link
-    pub mygpo_link: String,
+    pub mygpo_link: Url,
     /// description of podcast
     pub description: String,
     /// number of subscribers on service
@@ -22,11 +23,11 @@ pub struct Suggestion {
     /// title of podcast
     pub title: String,
     /// feed URL
-    pub url: String,
+    pub url: Url,
     /// number of subscribers on service one week before
     pub subscribers_last_week: u16,
     /// URL to logo of podcast
-    pub logo_url: Option<String>,
+    pub logo_url: Option<Url>,
 }
 
 /// see [`retrieve_suggested_podcasts`](./trait.RetrieveSuggestedPodcasts.html#tymethod.retrieve_suggested_podcasts)
@@ -117,13 +118,14 @@ mod tests {
     use std::cmp::Ordering;
     use std::collections::hash_map::DefaultHasher;
     use std::hash::{Hash, Hasher};
+    use url::Url;
 
     #[test]
     fn equal_suggestion_means_equal_hash() {
         let suggestion1 = Suggestion {
-            url: String::from("http://goinglinux.com/mp3podcast.xml"),
-            website: String::from("http://www.linuxgeekdom.com"),
-            mygpo_link: String::from("http://gpodder.net/podcast/64439"),
+            url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
+            website: Url::parse("http://www.linuxgeekdom.com").unwrap(),
+            mygpo_link: Url::parse("http://gpodder.net/podcast/64439").unwrap(),
             description: String::from("Linux Geekdom"),
             subscribers: 0,
             title: String::from("Linux Geekdom"),
@@ -131,16 +133,14 @@ mod tests {
             logo_url: None,
         };
         let suggestion2 = Suggestion {
-            url: String::from("http://goinglinux.com/mp3podcast.xml"),
-            website: String::from("http://goinglinux.com"),
-            mygpo_link: String::from("http://gpodder.net/podcast/11171"),
+            url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
+            website: Url::parse("http://goinglinux.com").unwrap(),
+            mygpo_link: Url::parse("http://gpodder.net/podcast/11171").unwrap(),
             description: String::from("Going Linux"),
             subscribers: 571,
             title: String::from("Going Linux"),
             subscribers_last_week: 571,
-            logo_url: Some(String::from(
-                "http://goinglinux.com/images/GoingLinux80.png",
-            )),
+            logo_url: Some(Url::parse("http://goinglinux.com/images/GoingLinux80.png").unwrap()),
         };
 
         assert_eq!(suggestion1, suggestion2);
@@ -158,16 +158,14 @@ mod tests {
     #[test]
     fn display() {
         let suggestion = Suggestion {
-            url: String::from("http://goinglinux.com/mp3podcast.xml"),
-            website: String::from("http://goinglinux.com"),
-            mygpo_link: String::from("http://gpodder.net/podcast/11171"),
+            url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
+            website: Url::parse("http://goinglinux.com").unwrap(),
+            mygpo_link: Url::parse("http://gpodder.net/podcast/11171").unwrap(),
             description: String::from("Going Linux"),
             subscribers: 571,
             title: String::from("Going Linux"),
             subscribers_last_week: 571,
-            logo_url: Some(String::from(
-                "http://goinglinux.com/images/GoingLinux80.png",
-            )),
+            logo_url: Some(Url::parse("http://goinglinux.com/images/GoingLinux80.png").unwrap()),
         };
 
         assert_eq!(
