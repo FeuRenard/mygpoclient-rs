@@ -1,16 +1,12 @@
-/*!
-
-This is a client library for the [gpodder.net](https://gpodder.net/) API
-
-# Usage
-
-For any request you need a [client](./client/index.html#structs).
-
-All supported API features are represented by a trait.
-
-A client's implemented traits mark its capabilities.
-
-*/
+//! This is a client library for the [gpodder.net](https://gpodder.net/) API
+//!
+//! # Usage
+//!
+//! For any request you need a [client](./client/index.html#structs).
+//!
+//! All supported API features are represented by a trait.
+//!
+//! A client's implemented traits mark its capabilities.
 
 #![deny(
     clippy::all,
