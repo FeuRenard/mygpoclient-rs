@@ -1,11 +1,15 @@
 //! [Device API](https://gpoddernet.readthedocs.io/en/latest/api/reference/devices.html)
 
 use crate::client::{AuthenticatedClient, DeviceClient};
+use crate::episode::EpisodeActionType;
 use crate::error::Error;
+use crate::subscription::Subscription;
+use chrono::naive::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::fmt;
 use std::hash::{Hash, Hasher};
+use url::Url;
 
 /// Type of the [`Device`](./struct.Device.html)
 #[serde(rename_all = "lowercase")]
@@ -48,7 +52,41 @@ pub(crate) struct DeviceData {
     pub(crate) device_type: Option<DeviceType>,
 }
 
-// TODO https://gpoddernet.readthedocs.io/en/latest/api/reference/devices.html#get-device-updates
+/// episode update information as used in [DeviceUpdates](./struct.DeviceUpdates.html)
+#[derive(Serialize, Deserialize)]
+pub struct EpisodeUpdate {
+    /// episode title
+    pub title: String,
+    /// episode URL
+    pub url: Url,
+    /// podcast title
+    pub podcast_title: String,
+    /// podcast URL
+    pub podcast_url: Url,
+    /// episode description
+    pub description: String,
+    /// episode website
+    pub website: Url,
+    /// gpodder.net internal URL
+    pub mygpo_link: Url,
+    /// episode release date
+    pub released: NaiveDateTime,
+    /// latest episode action reported for this episode
+    pub status: Option<EpisodeActionType>,
+}
+
+/// updated information for a device as returned by [`get_device_updates`](./trait.GetDeviceUpdates.html#tymethod.get_device_updates)
+#[derive(Serialize, Deserialize)]
+pub struct DeviceUpdates {
+    /// list of subscriptions to be added
+    pub add: Vec<Subscription>,
+    /// list of URLs to be unsubscribed
+    pub rem: Vec<Url>,
+    /// list of updated episodes
+    pub updates: Vec<EpisodeUpdate>,
+    /// current timestamp; for retrieving changes since the last query
+    pub timestamp: u64,
+}
 
 /// see [`update_device_data`](./trait.UpdateDeviceData.html#tymethod.update_device_data)
 pub trait UpdateDeviceData {
@@ -85,7 +123,7 @@ pub trait UpdateDeviceData {
     ) -> Result<(), Error>;
 }
 
-/// see [`list_devices'](./trait.ListDevices.html#tymethod.list_devices)
+/// see [`list_devices`](./trait.ListDevices.html#tymethod.list_devices)
 pub trait ListDevices {
     /// List Devices
     ///
@@ -111,6 +149,34 @@ pub trait ListDevices {
     ///
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/devices.html#list-devices)
     fn list_devices(&self) -> Result<Vec<Device>, Error>;
+}
+
+/// see [`get_device_updates`](./trait.GetDeviceUpdates.html#tymethod.get_device_updates)
+pub trait GetDeviceUpdates {
+    /// Get Device Updates
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use mygpoclient::client::DeviceClient;
+    /// use mygpoclient::device::GetDeviceUpdates;
+    ///
+    /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
+    /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
+    /// # let deviceid = std::env::var("GPODDER_NET_DEVICEID").unwrap();
+    /// #
+    /// let client = DeviceClient::new(&username, &password, &deviceid);
+    ///
+    /// let device_updates = client.get_device_updates(0, true)?;
+    ///
+    /// # Ok::<(), mygpoclient::error::Error>(())
+    /// ```
+    ///
+    /// # See also
+    ///
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/devices.html#get-device-updates)
+    fn get_device_updates(&self, since: u16, include_actions: bool)
+        -> Result<DeviceUpdates, Error>;
 }
 
 impl UpdateDeviceData for DeviceClient {
@@ -148,6 +214,34 @@ impl ListDevices for AuthenticatedClient {
 impl ListDevices for DeviceClient {
     fn list_devices(&self) -> Result<Vec<Device>, Error> {
         self.as_ref().list_devices()
+    }
+}
+
+impl GetDeviceUpdates for DeviceClient {
+    fn get_device_updates(
+        &self,
+        since: u16,
+        include_actions: bool,
+    ) -> Result<DeviceUpdates, Error> {
+        let mut query_parameters: Vec<&(&str, &str)> = Vec::new();
+
+        let since_string = since.to_string();
+        let query_parameter_since = ("since", since_string.as_ref());
+        query_parameters.push(&query_parameter_since);
+
+        let include_actions_string = include_actions.to_string();
+        let query_parameter_include_actions = ("include_actions", include_actions_string.as_ref());
+        query_parameters.push(&query_parameter_include_actions);
+
+        Ok(self
+            .get_with_query(
+                &format!(
+                    "https://gpodder.net/api/2/updates/{}/{}.json",
+                    self.authenticated_client.username, self.device_id
+                ),
+                &query_parameters,
+            )?
+            .json()?)
     }
 }
 

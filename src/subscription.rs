@@ -16,6 +16,8 @@ pub struct Subscription {
     pub url: Url,
     /// title of podcast
     pub title: String,
+    /// author of podcast
+    pub author: Option<String>,
     /// description of podcast
     pub description: String,
     /// number of subscribers on service
@@ -323,6 +325,7 @@ mod tests {
     fn equal_subscription_means_equal_hash() {
         let subscription1 = Subscription {
             url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
+            author: None,
             website: Some(Url::parse("http://www.linuxgeekdom.com").unwrap()),
             mygpo_link: Url::parse("http://gpodder.net/podcast/64439").unwrap(),
             description: String::from("Linux Geekdom"),
@@ -334,6 +337,7 @@ mod tests {
         };
         let subscription2 = Subscription {
             url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
+            author: None,
             website: Some(Url::parse("http://goinglinux.com").unwrap()),
             mygpo_link: Url::parse("http://gpodder.net/podcast/11171").unwrap(),
             description: String::from("Going Linux"),
@@ -365,6 +369,7 @@ mod tests {
     fn display() {
         let subscription = Subscription {
             url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
+            author: None,
             website: Some(Url::parse("http://goinglinux.com").unwrap()),
             mygpo_link: Url::parse("http://gpodder.net/podcast/11171").unwrap(),
             description: String::from("Going Linux"),
