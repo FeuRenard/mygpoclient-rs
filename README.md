@@ -8,6 +8,20 @@
 
 Rust client library for [gpodder.net](https://gpodder.net/)
 
+## Supported features
+
+- [ ] [Authentication](https://gpoddernet.readthedocs.io/en/latest/api/reference/auth.html)
+- [ ] [Directory](https://gpoddernet.readthedocs.io/en/latest/api/reference/directory.html)
+- [x] [Suggestions](https://gpoddernet.readthedocs.io/en/latest/api/reference/suggestions.html)
+- [x] [Device](https://gpoddernet.readthedocs.io/en/latest/api/reference/devices.html)
+- [x] [Subscriptions](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html)
+- [x] [Episode Actions](https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html)
+- [ ] [Podcast Lists](https://gpoddernet.readthedocs.io/en/latest/api/reference/podcastlists.html)
+- [ ] [Settings](https://gpoddernet.readthedocs.io/en/latest/api/reference/settings.html)
+- [ ] [Favorites](https://gpoddernet.readthedocs.io/en/latest/api/reference/favorites.html)
+- [ ] [Device Synchronization](https://gpoddernet.readthedocs.io/en/latest/api/reference/sync.html)
+- [ ] [Client Parametrization](https://gpoddernet.readthedocs.io/en/latest/api/reference/clientconfig.html)
+
 ## Building
 1. Clone this repository
 2. Run `cargo build`
