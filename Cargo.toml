@@ -6,7 +6,7 @@ edition = "2018"
 description = "Client library for gpodder.net API"
 repository = "https://github.com/FeuRenard/mygpoclient-rs"
 readme = "README.md"
-keywords = ["podcast","podcasts","gPodder","gpodder.net"]
+keywords = ["podcast","podcasts","gPodder","mygpo"]
 categories = ["api-bindings"]
 license = "GPL-3.0-only"
 
