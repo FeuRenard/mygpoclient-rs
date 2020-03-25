@@ -4,7 +4,11 @@ All user visible changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/), as described
 for Rust libraries in [RFC #1105](https://github.com/rust-lang/rfcs/blob/master/text/1105-api-evolution.md)
 
-## 0.1.0 - 2020-03-25
+## [0.1.1] - 2020-03-25
+
+* Fix documentation build on docs.rs
+
+## [0.1.0] - 2020-03-25
 
 Initial release
 
