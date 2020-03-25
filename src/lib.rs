@@ -29,6 +29,7 @@
     unused_lifetimes,
     unused_qualifications
 )]
+#![allow(missing_doc_code_examples)]
 
 pub mod client;
 pub mod device;

@@ -132,9 +132,9 @@ pub trait GetEpisodeActions {
     ///
     /// # Parameters
     ///
-    /// - [`podcast`]: The URL of a Podcast feed; if set, only actions for episodes of the given podcast are returned
-    /// - [`since`]: Only episode actions since the given timestamp are returned
-    /// - [`aggregated`]: If true, only the latest actions is returned for each episode
+    /// - `podcast`: The URL of a Podcast feed; if set, only actions for episodes of the given podcast are returned
+    /// - `since`: Only episode actions since the given timestamp are returned
+    /// - `aggregated`: If true, only the latest actions is returned for each episode
     ///
     /// # Examples
     ///
@@ -177,7 +177,7 @@ impl EpisodeAction {
         }
     }
 
-    /// Create new [download] event, so that other clients know where a file has already been downloaded.
+    /// Create new [`Download`](./enum.EpisodeActionType.html#variant.Download) event, so that other clients know where a file has already been downloaded.
     pub fn new_download(
         podcast: Url,
         episode: Url,
@@ -186,7 +186,7 @@ impl EpisodeAction {
         Self::new(podcast, episode, timestamp, EpisodeActionType::Download)
     }
 
-    /// Create new [delete] event so that other clients know where a previously downloaded file has been deleted.
+    /// Create new [`Delete`](./enum.EpisodeActionType.html#variant.Delete) event so that other clients know where a previously downloaded file has been deleted.
     pub fn new_delete(
         podcast: Url,
         episode: Url,
@@ -195,12 +195,12 @@ impl EpisodeAction {
         Self::new(podcast, episode, timestamp, EpisodeActionType::Delete)
     }
 
-    /// Create new [new] event, to reset previous events. This state needs to be interpreted by receiving clients and does not delete any information on the webservice.
+    /// Create new [`New`](./enum.EpisodeActionType.html#variant.New) event, to reset previous events. This state needs to be interpreted by receiving clients and does not delete any information on the webservice.
     pub fn new_new(podcast: Url, episode: Url, timestamp: Option<NaiveDateTime>) -> EpisodeAction {
         Self::new(podcast, episode, timestamp, EpisodeActionType::New)
     }
 
-    /// Create new [play] event with [position] information (in seconds) so that other clients know where to start playback.
+    /// Create new [`Play`](./enum.EpisodeActionType.html#variant.Play) event with [`position`](./enum.EpisodeActionType.html#variant.Play.field.position) information (in seconds) so that other clients know where to start playback.
     pub fn new_play_stop(
         podcast: Url,
         episode: Url,
@@ -220,7 +220,7 @@ impl EpisodeAction {
         }
     }
 
-    /// Create new [play] event with [position], [started] and [total] information (in seconds) so that other clients know where to start playback.
+    /// Create new [`Play`](./enum.EpisodeActionType.html#variant.Play) event with [`position`](./enum.EpisodeActionType.html#variant.Play.field.position), [`started`](./enum.EpisodeActionType.html#variant.Play.field.started) and [`total`](./enum.EpisodeActionType.html#variant.Play.field.total) information (in seconds) so that other clients know where to start playback.
     pub fn new_play(
         podcast: Url,
         episode: Url,
