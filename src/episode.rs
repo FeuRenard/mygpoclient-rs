@@ -106,9 +106,12 @@ pub trait UploadEpisodeActions {
     /// #
     /// let client = AuthenticatedClient::new(&username, &password);
     ///
-    /// let episode_action_1 = EpisodeAction::new_download(Url::parse("http://example.com/feed.rss").unwrap(), Url::parse("http://example.com/files/s01e20.mp3").unwrap(), Some(NaiveDate::from_ymd(2009,12,12).and_hms(9,0,0)));
-    /// let episode_action_2 = EpisodeAction::new_play(Url::parse("http://example.org/podcast.php").unwrap(), Url::parse("http://ftp.example.org/foo.ogg").unwrap(), None,120,15,500);
-    /// let episode_actions = vec!(episode_action_1, episode_action_2);
+    /// let download = EpisodeAction::new_download(Url::parse("http://example.com/feed1.rss").unwrap(), Url::parse("http://example.com/files/s01e20.mp3").unwrap(), Some(NaiveDate::from_ymd(2009,12,12).and_hms(9,0,0)));
+    /// let play = EpisodeAction::new_play(Url::parse("http://example.org/podcast2.php").unwrap(), Url::parse("http://ftp.example.org/foo2.ogg").unwrap(), None,120,15,500);
+    /// let delete = EpisodeAction::new_delete(Url::parse("http://example.com/feed3.rss").unwrap(), Url::parse("http://example.com/files/s03e20.mp3").unwrap(), None);
+    /// let new = EpisodeAction::new_new(Url::parse("http://example.com/feed4.rss").unwrap(), Url::parse("http://example.com/files/s04e20.mp3").unwrap(), None);
+    /// let play_stop = EpisodeAction::new_play_stop(Url::parse("http://example.org/podcast5.php").unwrap(), Url::parse("http://ftp.example.org/foo5.ogg").unwrap(), None, 120);
+    /// let episode_actions = vec!(download, play, delete, new, play_stop);
     ///
     /// let response = client.upload_episode_actions(&episode_actions)?;
     /// #
@@ -121,7 +124,6 @@ pub trait UploadEpisodeActions {
 }
 
 // TODO use Date(time?) instead of timestamps as integers
-// TODO use URL struct instead of plain strings for feed urls
 /// see [`get_episode_actions`](./trait.GetEpisodeActions.html#tymethod.get_episode_actions)
 pub trait GetEpisodeActions {
     /// Get changed episode actions
