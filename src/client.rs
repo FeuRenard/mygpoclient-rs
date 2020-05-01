@@ -7,12 +7,18 @@ use serde::Serialize;
 const PACKAGE_NAME: &str = env!("CARGO_PKG_NAME");
 const PACKAGE_VERSION: &str = env!("CARGO_PKG_VERSION");
 
+/// Client without authenticatication
+#[derive(Debug, Clone, Default)]
+pub struct PublicClient {
+    pub(crate) client: Client,
+}
+
 /// Client authenticated with username and password
 #[derive(Debug, Clone)]
 pub struct AuthenticatedClient {
     pub(crate) username: String,
     pub(crate) password: String,
-    client: Client,
+    pub(crate) public_client: PublicClient,
 }
 
 /// Device-specific [`AuthenticatedClient`](./struct.AuthenticatedClient.html)
@@ -22,13 +28,22 @@ pub struct DeviceClient {
     pub(crate) authenticated_client: AuthenticatedClient,
 }
 
+impl PublicClient {
+    /// Create [`PublicClient`](./struct.PublicClient.html) locally
+    pub fn new() -> PublicClient {
+        PublicClient {
+            client: Default::default(),
+        }
+    }
+}
+
 impl AuthenticatedClient {
     /// Create [`AuthenticatedClient`](./struct.AuthenticatedClient.html) locally
     pub fn new(username: &str, password: &str) -> AuthenticatedClient {
         AuthenticatedClient {
             username: username.to_owned(),
             password: password.to_owned(),
-            client: Client::new(),
+            public_client: PublicClient::new(),
         }
     }
 
@@ -42,7 +57,8 @@ impl AuthenticatedClient {
         url: U,
         query_parameters: &[&T],
     ) -> Result<Response, reqwest::Error> {
-        self.client
+        self.public_client
+            .client
             .get(url)
             .basic_auth(&self.username, Some(&self.password))
             .header(
@@ -58,7 +74,8 @@ impl AuthenticatedClient {
         url: U,
         json: &T,
     ) -> Result<Response, reqwest::Error> {
-        self.client
+        self.public_client
+            .client
             .put(url)
             .basic_auth(&self.username, Some(&self.password))
             .header(
@@ -74,7 +91,8 @@ impl AuthenticatedClient {
         url: U,
         json: &T,
     ) -> Result<Response, reqwest::Error> {
-        self.client
+        self.public_client
+            .client
             .post(url)
             .basic_auth(&self.username, Some(&self.password))
             .header(
