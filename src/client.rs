@@ -37,12 +37,22 @@ impl PublicClient {
     }
 
     pub(crate) fn get<U: IntoUrl>(&self, url: U) -> Result<Response, reqwest::Error> {
+        let empty_slice: &[&String] = &[];
+        self.get_with_query(url, empty_slice)
+    }
+
+    pub(crate) fn get_with_query<U: IntoUrl, T: Serialize + ?Sized>(
+        &self,
+        url: U,
+        query_parameters: &[&T],
+    ) -> Result<Response, reqwest::Error> {
         self.client
             .get(url)
             .header(
                 reqwest::header::USER_AGENT,
                 &format!("{}/{}", PACKAGE_NAME, PACKAGE_VERSION),
             )
+            .query(query_parameters)
             .send()
     }
 }

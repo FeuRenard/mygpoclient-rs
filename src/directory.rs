@@ -8,6 +8,7 @@ use std::cmp::Ordering;
 use std::fmt;
 use std::hash::{Hash, Hasher};
 use url::form_urlencoded::byte_serialize;
+use url::Url;
 
 /// Podcast tags
 #[derive(Deserialize, Serialize, Debug, Clone, Eq)]
@@ -74,6 +75,33 @@ pub trait RetrievePodcastsForTag {
     fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Subscription>, Error>;
 }
 
+/// see [`retrieve_podcast_data`](./trait.RetrievePodcastData.html#tymethod.retrieve_podcast_data)
+pub trait RetrievePodcastData {
+    /// Returns information for the podcast with the given URL or Error if there is no podcast with this URL.
+    ///
+    /// # Parameters
+    ///
+    /// - `tag`: podcast tag
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use mygpoclient::client::PublicClient;
+    /// use mygpoclient::directory::RetrievePodcastData;
+    /// use url::Url;
+    ///
+    /// let url = Url::parse("http://feeds.feedburner.com/coverville").unwrap();
+    /// let podcast = PublicClient::default().retrieve_podcast_data(url)?;
+    ///
+    /// # Ok::<(), mygpoclient::error::Error>(())
+    /// ```
+    ///
+    /// # See also
+    ///
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/directory.html#retrieve-podcast-data)
+    fn retrieve_podcast_data(&self, url: Url) -> Result<Subscription, Error>;
+}
+
 impl RetrieveTopTags for PublicClient {
     fn retrieve_top_tags(&self, count: u8) -> Result<Vec<Tag>, Error> {
         Ok(self
@@ -120,6 +148,29 @@ impl RetrievePodcastsForTag for DeviceClient {
     fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Subscription>, Error> {
         self.authenticated_client
             .retrieve_podcasts_for_tag(tag, count)
+    }
+}
+
+impl RetrievePodcastData for PublicClient {
+    fn retrieve_podcast_data(&self, url: Url) -> Result<Subscription, Error> {
+        Ok(self
+            .get_with_query(
+                "https://gpodder.net/api/2/data/podcast.json",
+                &[&("url", url.as_str())],
+            )?
+            .json()?)
+    }
+}
+
+impl RetrievePodcastData for AuthenticatedClient {
+    fn retrieve_podcast_data(&self, url: Url) -> Result<Subscription, Error> {
+        self.public_client.retrieve_podcast_data(url)
+    }
+}
+
+impl RetrievePodcastData for DeviceClient {
+    fn retrieve_podcast_data(&self, url: Url) -> Result<Subscription, Error> {
+        self.authenticated_client.retrieve_podcast_data(url)
     }
 }
 
