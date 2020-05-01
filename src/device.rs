@@ -160,14 +160,16 @@ pub trait GetDeviceUpdates {
     /// ```
     /// use mygpoclient::client::DeviceClient;
     /// use mygpoclient::device::GetDeviceUpdates;
+    /// # use std::time::{SystemTime, UNIX_EPOCH};
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
     /// # let deviceid = std::env::var("GPODDER_NET_DEVICEID").unwrap();
+    /// # let timestamp = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() - 86400;
     /// #
     /// let client = DeviceClient::new(&username, &password, &deviceid);
     ///
-    /// let device_updates = client.get_device_updates(0, true)?;
+    /// let device_updates = client.get_device_updates(timestamp, true)?;
     ///
     /// # Ok::<(), mygpoclient::error::Error>(())
     /// ```
@@ -175,7 +177,7 @@ pub trait GetDeviceUpdates {
     /// # See also
     ///
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/devices.html#get-device-updates)
-    fn get_device_updates(&self, since: u16, include_actions: bool)
+    fn get_device_updates(&self, since: u64, include_actions: bool)
         -> Result<DeviceUpdates, Error>;
 }
 
@@ -220,7 +222,7 @@ impl ListDevices for DeviceClient {
 impl GetDeviceUpdates for DeviceClient {
     fn get_device_updates(
         &self,
-        since: u16,
+        since: u64,
         include_actions: bool,
     ) -> Result<DeviceUpdates, Error> {
         let mut query_parameters: Vec<&(&str, &str)> = Vec::new();
