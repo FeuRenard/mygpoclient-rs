@@ -14,6 +14,13 @@ if [ ! $? -eq 0 ]; then
     exit 1
 fi
 
+cargo doc
+
+if [ ! $? -eq 0 ]; then
+    echo "Fix doc errors before committing"
+    exit 1
+fi
+
 cargo fmt --all -- --check --quiet
 
 if [ ! $? -eq 0 ]; then
