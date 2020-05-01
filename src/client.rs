@@ -35,6 +35,16 @@ impl PublicClient {
             client: Default::default(),
         }
     }
+
+    pub(crate) fn get<U: IntoUrl>(&self, url: U) -> Result<Response, reqwest::Error> {
+        self.client
+            .get(url)
+            .header(
+                reqwest::header::USER_AGENT,
+                &format!("{}/{}", PACKAGE_NAME, PACKAGE_VERSION),
+            )
+            .send()
+    }
 }
 
 impl AuthenticatedClient {

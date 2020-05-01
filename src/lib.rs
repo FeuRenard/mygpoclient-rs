@@ -33,6 +33,7 @@
 
 pub mod client;
 pub mod device;
+pub mod directory;
 pub mod episode;
 pub mod error;
 pub mod subscription;
