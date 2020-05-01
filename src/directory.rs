@@ -2,10 +2,12 @@
 
 use crate::client::{AuthenticatedClient, DeviceClient, PublicClient};
 use crate::error::Error;
+use crate::subscription::Subscription;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::fmt;
 use std::hash::{Hash, Hasher};
+use url::form_urlencoded::byte_serialize;
 
 /// Podcast tags
 #[derive(Deserialize, Serialize, Debug, Clone, Eq)]
@@ -30,7 +32,7 @@ pub trait RetrieveTopTags {
     ///
     /// ```
     /// use mygpoclient::client::PublicClient;
-    /// use mygpoclient::directory::{RetrieveTopTags, Tag};
+    /// use mygpoclient::directory::RetrieveTopTags;
     ///
     /// let tags = PublicClient::default().retrieve_top_tags(10)?;
     /// assert_eq!(10, tags.len());
@@ -42,6 +44,34 @@ pub trait RetrieveTopTags {
     ///
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/directory.html#retrieve-top-tags)
     fn retrieve_top_tags(&self, count: u8) -> Result<Vec<Tag>, Error>;
+}
+
+/// see [`retrieve_podcasts_for_tag`](./trait.RetrievePodcastsForTag.html#tymethod.retrieve_podcasts_for_tag)
+pub trait RetrievePodcastsForTag {
+    /// Retrieve Podcasts for Tag
+    ///
+    /// # Parameters
+    ///
+    /// - `tag`: podcast tag
+    /// - `count`: number of tags to return
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use mygpoclient::client::PublicClient;
+    /// use mygpoclient::directory::RetrievePodcastsForTag;
+    ///
+    /// let max_results = 3;
+    /// let podcasts = PublicClient::default().retrieve_podcasts_for_tag("new", max_results)?;
+    /// assert!(podcasts.len() <= max_results as usize);
+    ///
+    /// # Ok::<(), mygpoclient::error::Error>(())
+    /// ```
+    ///
+    /// # See also
+    ///
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/directory.html#retrieve-podcasts-for-tag)
+    fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Subscription>, Error>;
 }
 
 impl RetrieveTopTags for PublicClient {
@@ -64,6 +94,32 @@ impl RetrieveTopTags for AuthenticatedClient {
 impl RetrieveTopTags for DeviceClient {
     fn retrieve_top_tags(&self, count: u8) -> Result<Vec<Tag>, Error> {
         self.authenticated_client.retrieve_top_tags(count)
+    }
+}
+
+impl RetrievePodcastsForTag for PublicClient {
+    fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Subscription>, Error> {
+        let tag_urlencoded: String = byte_serialize(tag.as_bytes()).collect();
+        Ok(self
+            .get(&format!(
+                "https://gpodder.net/api/2/tag/{}/{}.json",
+                tag_urlencoded,
+                count.to_string()
+            ))?
+            .json()?)
+    }
+}
+
+impl RetrievePodcastsForTag for AuthenticatedClient {
+    fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Subscription>, Error> {
+        self.public_client.retrieve_podcasts_for_tag(tag, count)
+    }
+}
+
+impl RetrievePodcastsForTag for DeviceClient {
+    fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Subscription>, Error> {
+        self.authenticated_client
+            .retrieve_podcasts_for_tag(tag, count)
     }
 }
 
