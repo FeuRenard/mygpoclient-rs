@@ -153,6 +153,38 @@ pub trait RetrieveEpisodeData {
     fn retrieve_episode_data(&self, podcast: Url, url: Url) -> Result<Episode, Error>;
 }
 
+/// see [`podcast_toplist`](./trait.PodcastToplist.html#tymethod.podcast_toplist)
+pub trait PodcastToplist {
+    /// Returns list of top podcasts
+    ///
+    /// # Parameters
+    ///
+    /// - `number`: maximum number of podcasts to return
+    /// - `scale_logo`: provides a link to a scaled logo for each podcast. Has to be a positive number up to 256 and defaults to 64.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use mygpoclient::client::PublicClient;
+    /// use mygpoclient::directory::PodcastToplist;
+    ///
+    /// let max_results = 10;
+    /// let podcasts = PublicClient::default().podcast_toplist(max_results, None)?;
+    /// assert_eq!(max_results as usize, podcasts.len());
+    ///
+    /// # Ok::<(), mygpoclient::error::Error>(())
+    /// ```
+    ///
+    /// # See also
+    ///
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/directory.html#podcast-toplist)
+    fn podcast_toplist(
+        &self,
+        number: u8,
+        scale_logo: Option<u16>,
+    ) -> Result<Vec<Subscription>, Error>;
+}
+
 impl RetrieveTopTags for PublicClient {
     fn retrieve_top_tags(&self, count: u8) -> Result<Vec<Tag>, Error> {
         Ok(self
@@ -246,6 +278,45 @@ impl RetrieveEpisodeData for DeviceClient {
     fn retrieve_episode_data(&self, url: Url, podcast: Url) -> Result<Episode, Error> {
         self.authenticated_client
             .retrieve_episode_data(url, podcast)
+    }
+}
+
+impl PodcastToplist for PublicClient {
+    fn podcast_toplist(
+        &self,
+        number: u8,
+        scale_logo: Option<u16>,
+    ) -> Result<Vec<Subscription>, Error> {
+        let url = &format!("https://gpodder.net/toplist/{}.json", number);
+
+        if let Some(size) = scale_logo {
+            Ok(self
+                .get_with_query(url, &[&("scale_logo", size.to_string())])?
+                .json()?)
+        } else {
+            Ok(self.get(url)?.json()?)
+        }
+    }
+}
+
+impl PodcastToplist for AuthenticatedClient {
+    fn podcast_toplist(
+        &self,
+        number: u8,
+        scale_logo: Option<u16>,
+    ) -> Result<Vec<Subscription>, Error> {
+        self.public_client.podcast_toplist(number, scale_logo)
+    }
+}
+
+impl PodcastToplist for DeviceClient {
+    fn podcast_toplist(
+        &self,
+        number: u8,
+        scale_logo: Option<u16>,
+    ) -> Result<Vec<Subscription>, Error> {
+        self.authenticated_client
+            .podcast_toplist(number, scale_logo)
     }
 }
 

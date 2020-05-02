@@ -4,6 +4,7 @@ use std::env;
 use url::Url;
 
 use mygpoclient::client::DeviceClient;
+use mygpoclient::directory::PodcastToplist;
 use mygpoclient::directory::RetrieveEpisodeData;
 use mygpoclient::directory::RetrievePodcastData;
 use mygpoclient::directory::RetrievePodcastsForTag;
@@ -48,6 +49,16 @@ fn test_retrieve_episode_data_device_client() -> Result<(), Error> {
     .unwrap();
     let podcast = Url::parse("http://feeds.wnyc.org/onthemedia?format=xml").unwrap();
     client.retrieve_episode_data(url, podcast)?;
+
+    Ok(())
+}
+
+#[test]
+fn test_podcast_toplist_device_client() -> Result<(), Error> {
+    let client = get_device_client();
+    let max_results = 5;
+    let podcasts = client.podcast_toplist(max_results, Some(256))?;
+    assert!(podcasts.len() <= max_results as usize);
 
     Ok(())
 }
