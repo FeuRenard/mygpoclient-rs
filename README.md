@@ -14,7 +14,7 @@ Rust client library for [gpodder.net](https://gpodder.net/)
 ## Supported features
 
 - [ ] [Authentication](https://gpoddernet.readthedocs.io/en/latest/api/reference/auth.html)
-- [ ] [Directory](https://gpoddernet.readthedocs.io/en/latest/api/reference/directory.html)
+- [x] [Directory](https://gpoddernet.readthedocs.io/en/latest/api/reference/directory.html)
 - [x] [Suggestions](https://gpoddernet.readthedocs.io/en/latest/api/reference/suggestions.html)
 - [x] [Device](https://gpoddernet.readthedocs.io/en/latest/api/reference/devices.html)
 - [x] [Subscriptions](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html)

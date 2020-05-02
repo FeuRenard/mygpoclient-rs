@@ -185,6 +185,33 @@ pub trait PodcastToplist {
     ) -> Result<Vec<Subscription>, Error>;
 }
 
+/// see [`podcast_search`](./trait.PodcastSearch.html#tymethod.podcast_search)
+pub trait PodcastSearch {
+    /// Carries out a service-wide search for podcasts that match the given query. Returns a list of podcasts.
+    ///
+    /// # Parameters
+    ///
+    /// - `q`: search query
+    /// - `scale_logo`: provides a link to a scaled logo for each podcast. Has to be a positive number up to 256 and defaults to 64.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use mygpoclient::client::PublicClient;
+    /// use mygpoclient::directory::PodcastSearch;
+    ///
+    /// let podcasts = PublicClient::default().podcast_search("raumzeit", None)?;
+    /// assert!(podcasts.len() > 0);
+    ///
+    /// # Ok::<(), mygpoclient::error::Error>(())
+    /// ```
+    ///
+    /// # See also
+    ///
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/directory.html#podcast-search)
+    fn podcast_search(&self, q: &str, scale_logo: Option<u16>) -> Result<Vec<Subscription>, Error>;
+}
+
 impl RetrieveTopTags for PublicClient {
     fn retrieve_top_tags(&self, count: u8) -> Result<Vec<Tag>, Error> {
         Ok(self
@@ -317,6 +344,41 @@ impl PodcastToplist for DeviceClient {
     ) -> Result<Vec<Subscription>, Error> {
         self.authenticated_client
             .podcast_toplist(number, scale_logo)
+    }
+}
+
+impl PodcastSearch for PublicClient {
+    fn podcast_search(&self, q: &str, scale_logo: Option<u16>) -> Result<Vec<Subscription>, Error> {
+        let mut query_parameters: Vec<&(&str, &str)> = Vec::new();
+
+        let query_parameter_since = ("q", q);
+        query_parameters.push(&query_parameter_since);
+
+        let scale_logo_string = match scale_logo {
+            Some(size) => size.to_string(),
+            None => String::new(),
+        };
+        let query_parameter_scale_logo: (&str, &str) = ("scale_logo", scale_logo_string.as_ref());
+
+        if !scale_logo_string.is_empty() {
+            query_parameters.push(&query_parameter_scale_logo);
+        }
+
+        Ok(self
+            .get_with_query("https://gpodder.net/search.json", &query_parameters)?
+            .json()?)
+    }
+}
+
+impl PodcastSearch for AuthenticatedClient {
+    fn podcast_search(&self, q: &str, scale_logo: Option<u16>) -> Result<Vec<Subscription>, Error> {
+        self.public_client.podcast_search(q, scale_logo)
+    }
+}
+
+impl PodcastSearch for DeviceClient {
+    fn podcast_search(&self, q: &str, scale_logo: Option<u16>) -> Result<Vec<Subscription>, Error> {
+        self.authenticated_client.podcast_search(q, scale_logo)
     }
 }
 

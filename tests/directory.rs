@@ -4,6 +4,7 @@ use std::env;
 use url::Url;
 
 use mygpoclient::client::DeviceClient;
+use mygpoclient::directory::PodcastSearch;
 use mygpoclient::directory::PodcastToplist;
 use mygpoclient::directory::RetrieveEpisodeData;
 use mygpoclient::directory::RetrievePodcastData;
@@ -59,6 +60,15 @@ fn test_podcast_toplist_device_client() -> Result<(), Error> {
     let max_results = 5;
     let podcasts = client.podcast_toplist(max_results, Some(256))?;
     assert!(podcasts.len() <= max_results as usize);
+
+    Ok(())
+}
+
+#[test]
+fn test_podcast_search_device_client() -> Result<(), Error> {
+    let client = get_device_client();
+    let podcasts = client.podcast_search("raumzeit", Some(256))?;
+    assert!(podcasts.len() > 0);
 
     Ok(())
 }
