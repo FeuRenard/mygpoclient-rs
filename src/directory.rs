@@ -2,7 +2,7 @@
 
 use crate::client::{AuthenticatedClient, DeviceClient, PublicClient};
 use crate::error::Error;
-use crate::subscription::Subscription;
+use crate::subscription::Podcast;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
@@ -94,7 +94,7 @@ pub trait RetrievePodcastsForTag {
     /// # See also
     ///
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/directory.html#retrieve-podcasts-for-tag)
-    fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Subscription>, Error>;
+    fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Podcast>, Error>;
 }
 
 /// see [`retrieve_podcast_data`](./trait.RetrievePodcastData.html#tymethod.retrieve_podcast_data)
@@ -121,7 +121,7 @@ pub trait RetrievePodcastData {
     /// # See also
     ///
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/directory.html#retrieve-podcast-data)
-    fn retrieve_podcast_data(&self, url: Url) -> Result<Subscription, Error>;
+    fn retrieve_podcast_data(&self, url: Url) -> Result<Podcast, Error>;
 }
 
 /// see [`retrieve_episode_data`](./trait.RetrieveEpisodeData.html#tymethod.retrieve_episode_data)
@@ -178,11 +178,7 @@ pub trait PodcastToplist {
     /// # See also
     ///
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/directory.html#podcast-toplist)
-    fn podcast_toplist(
-        &self,
-        number: u8,
-        scale_logo: Option<u16>,
-    ) -> Result<Vec<Subscription>, Error>;
+    fn podcast_toplist(&self, number: u8, scale_logo: Option<u16>) -> Result<Vec<Podcast>, Error>;
 }
 
 /// see [`podcast_search`](./trait.PodcastSearch.html#tymethod.podcast_search)
@@ -209,7 +205,7 @@ pub trait PodcastSearch {
     /// # See also
     ///
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/directory.html#podcast-search)
-    fn podcast_search(&self, q: &str, scale_logo: Option<u16>) -> Result<Vec<Subscription>, Error>;
+    fn podcast_search(&self, q: &str, scale_logo: Option<u16>) -> Result<Vec<Podcast>, Error>;
 }
 
 impl RetrieveTopTags for PublicClient {
@@ -236,7 +232,7 @@ impl RetrieveTopTags for DeviceClient {
 }
 
 impl RetrievePodcastsForTag for PublicClient {
-    fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Subscription>, Error> {
+    fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Podcast>, Error> {
         let tag_urlencoded: String = byte_serialize(tag.as_bytes()).collect();
         Ok(self
             .get(&format!(
@@ -249,20 +245,20 @@ impl RetrievePodcastsForTag for PublicClient {
 }
 
 impl RetrievePodcastsForTag for AuthenticatedClient {
-    fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Subscription>, Error> {
+    fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Podcast>, Error> {
         self.public_client.retrieve_podcasts_for_tag(tag, count)
     }
 }
 
 impl RetrievePodcastsForTag for DeviceClient {
-    fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Subscription>, Error> {
+    fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Podcast>, Error> {
         self.authenticated_client
             .retrieve_podcasts_for_tag(tag, count)
     }
 }
 
 impl RetrievePodcastData for PublicClient {
-    fn retrieve_podcast_data(&self, url: Url) -> Result<Subscription, Error> {
+    fn retrieve_podcast_data(&self, url: Url) -> Result<Podcast, Error> {
         Ok(self
             .get_with_query(
                 "https://gpodder.net/api/2/data/podcast.json",
@@ -273,13 +269,13 @@ impl RetrievePodcastData for PublicClient {
 }
 
 impl RetrievePodcastData for AuthenticatedClient {
-    fn retrieve_podcast_data(&self, url: Url) -> Result<Subscription, Error> {
+    fn retrieve_podcast_data(&self, url: Url) -> Result<Podcast, Error> {
         self.public_client.retrieve_podcast_data(url)
     }
 }
 
 impl RetrievePodcastData for DeviceClient {
-    fn retrieve_podcast_data(&self, url: Url) -> Result<Subscription, Error> {
+    fn retrieve_podcast_data(&self, url: Url) -> Result<Podcast, Error> {
         self.authenticated_client.retrieve_podcast_data(url)
     }
 }
@@ -309,11 +305,7 @@ impl RetrieveEpisodeData for DeviceClient {
 }
 
 impl PodcastToplist for PublicClient {
-    fn podcast_toplist(
-        &self,
-        number: u8,
-        scale_logo: Option<u16>,
-    ) -> Result<Vec<Subscription>, Error> {
+    fn podcast_toplist(&self, number: u8, scale_logo: Option<u16>) -> Result<Vec<Podcast>, Error> {
         let url = &format!("https://gpodder.net/toplist/{}.json", number);
 
         if let Some(size) = scale_logo {
@@ -327,28 +319,20 @@ impl PodcastToplist for PublicClient {
 }
 
 impl PodcastToplist for AuthenticatedClient {
-    fn podcast_toplist(
-        &self,
-        number: u8,
-        scale_logo: Option<u16>,
-    ) -> Result<Vec<Subscription>, Error> {
+    fn podcast_toplist(&self, number: u8, scale_logo: Option<u16>) -> Result<Vec<Podcast>, Error> {
         self.public_client.podcast_toplist(number, scale_logo)
     }
 }
 
 impl PodcastToplist for DeviceClient {
-    fn podcast_toplist(
-        &self,
-        number: u8,
-        scale_logo: Option<u16>,
-    ) -> Result<Vec<Subscription>, Error> {
+    fn podcast_toplist(&self, number: u8, scale_logo: Option<u16>) -> Result<Vec<Podcast>, Error> {
         self.authenticated_client
             .podcast_toplist(number, scale_logo)
     }
 }
 
 impl PodcastSearch for PublicClient {
-    fn podcast_search(&self, q: &str, scale_logo: Option<u16>) -> Result<Vec<Subscription>, Error> {
+    fn podcast_search(&self, q: &str, scale_logo: Option<u16>) -> Result<Vec<Podcast>, Error> {
         let mut query_parameters: Vec<&(&str, &str)> = Vec::new();
 
         let query_parameter_since = ("q", q);
@@ -371,13 +355,13 @@ impl PodcastSearch for PublicClient {
 }
 
 impl PodcastSearch for AuthenticatedClient {
-    fn podcast_search(&self, q: &str, scale_logo: Option<u16>) -> Result<Vec<Subscription>, Error> {
+    fn podcast_search(&self, q: &str, scale_logo: Option<u16>) -> Result<Vec<Podcast>, Error> {
         self.public_client.podcast_search(q, scale_logo)
     }
 }
 
 impl PodcastSearch for DeviceClient {
-    fn podcast_search(&self, q: &str, scale_logo: Option<u16>) -> Result<Vec<Subscription>, Error> {
+    fn podcast_search(&self, q: &str, scale_logo: Option<u16>) -> Result<Vec<Podcast>, Error> {
         self.authenticated_client.podcast_search(q, scale_logo)
     }
 }

@@ -3,7 +3,7 @@
 use crate::client::{AuthenticatedClient, DeviceClient};
 use crate::episode::EpisodeActionType;
 use crate::error::Error;
-use crate::subscription::Subscription;
+use crate::subscription::Podcast;
 use chrono::naive::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
@@ -79,7 +79,7 @@ pub struct EpisodeUpdate {
 #[derive(Serialize, Deserialize)]
 pub struct DeviceUpdates {
     /// list of subscriptions to be added
-    pub add: Vec<Subscription>,
+    pub add: Vec<Podcast>,
     /// list of URLs to be unsubscribed
     pub rem: Vec<Url>,
     /// list of updated episodes

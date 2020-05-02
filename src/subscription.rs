@@ -9,9 +9,9 @@ use std::fmt;
 use std::hash::{Hash, Hasher};
 use url::Url;
 
-/// A Subscription as returned by [`get_all_subscriptions`](./trait.GetAllSubscriptions.html#tymethod.get_all_subscriptions)
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Subscription {
+/// Podcast
+#[derive(Serialize, Deserialize, Debug, Clone, Eq)]
+pub struct Podcast {
     /// feed URL
     pub url: Url,
     /// title of podcast
@@ -87,7 +87,7 @@ pub trait GetAllSubscriptions {
     /// # See also
     ///
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/subscriptions.html#get-all-subscriptions)
-    fn get_all_subscriptions(&self) -> Result<Vec<Subscription>, Error>;
+    fn get_all_subscriptions(&self) -> Result<Vec<Podcast>, Error>;
 }
 
 /// Get and upload subscriptions of a device
@@ -190,7 +190,7 @@ pub trait SubscriptionChanges {
 }
 
 impl GetAllSubscriptions for AuthenticatedClient {
-    fn get_all_subscriptions(&self) -> Result<Vec<Subscription>, Error> {
+    fn get_all_subscriptions(&self) -> Result<Vec<Podcast>, Error> {
         Ok(self
             .get(&format!(
                 "https://gpodder.net/subscriptions/{}.json",
@@ -201,7 +201,7 @@ impl GetAllSubscriptions for AuthenticatedClient {
 }
 
 impl GetAllSubscriptions for DeviceClient {
-    fn get_all_subscriptions(&self) -> Result<Vec<Subscription>, Error> {
+    fn get_all_subscriptions(&self) -> Result<Vec<Podcast>, Error> {
         self.as_ref().get_all_subscriptions()
     }
 }
@@ -265,33 +265,31 @@ impl SubscriptionChanges for DeviceClient {
     }
 }
 
-impl PartialEq for Subscription {
+impl PartialEq for Podcast {
     fn eq(&self, other: &Self) -> bool {
         self.url == other.url
     }
 }
 
-impl Eq for Subscription {}
-
-impl Ord for Subscription {
+impl Ord for Podcast {
     fn cmp(&self, other: &Self) -> Ordering {
         self.url.cmp(&other.url)
     }
 }
 
-impl PartialOrd for Subscription {
+impl PartialOrd for Podcast {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl Hash for Subscription {
+impl Hash for Podcast {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.url.hash(state);
     }
 }
 
-impl fmt::Display for Subscription {
+impl fmt::Display for Podcast {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}: {} <{}>", self.title, self.description, self.url)
     }
@@ -315,7 +313,7 @@ impl fmt::Display for GetSubscriptionChangesResponse {
 
 #[cfg(test)]
 mod tests {
-    use super::Subscription;
+    use super::Podcast;
     use std::cmp::Ordering;
     use std::collections::hash_map::DefaultHasher;
     use std::hash::{Hash, Hasher};
@@ -323,7 +321,7 @@ mod tests {
 
     #[test]
     fn equal_subscription_means_equal_hash() {
-        let subscription1 = Subscription {
+        let subscription1 = Podcast {
             url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
             author: None,
             website: Some(Url::parse("http://www.linuxgeekdom.com").unwrap()),
@@ -335,7 +333,7 @@ mod tests {
             logo_url: None,
             scaled_logo_url: None,
         };
-        let subscription2 = Subscription {
+        let subscription2 = Podcast {
             url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
             author: None,
             website: Some(Url::parse("http://goinglinux.com").unwrap()),
@@ -367,7 +365,7 @@ mod tests {
 
     #[test]
     fn display() {
-        let subscription = Subscription {
+        let subscription = Podcast {
             url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
             author: None,
             website: Some(Url::parse("http://goinglinux.com").unwrap()),
