@@ -297,7 +297,7 @@ impl fmt::Display for Podcast {
 
 impl fmt::Display for UploadSubscriptionChangesResponse {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}: {:?}>", self.timestamp, self.update_urls)
+        write!(f, "{}: {:?}", self.timestamp, self.update_urls)
     }
 }
 
@@ -305,7 +305,7 @@ impl fmt::Display for GetSubscriptionChangesResponse {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "{}: add{:?}, remove{:?}>",
+            "{}: add{:?}, remove{:?}",
             self.timestamp, self.add, self.remove
         )
     }
@@ -313,7 +313,9 @@ impl fmt::Display for GetSubscriptionChangesResponse {
 
 #[cfg(test)]
 mod tests {
+    use super::GetSubscriptionChangesResponse;
     use super::Podcast;
+    use super::UploadSubscriptionChangesResponse;
     use std::cmp::Ordering;
     use std::collections::hash_map::DefaultHasher;
     use std::hash::{Hash, Hasher};
@@ -364,7 +366,7 @@ mod tests {
     }
 
     #[test]
-    fn display() {
+    fn display_podcast() {
         let subscription = Podcast {
             url: Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap(),
             author: None,
@@ -383,6 +385,41 @@ mod tests {
         assert_eq!(
             "Going Linux: Going Linux <http://goinglinux.com/mp3podcast.xml>".to_owned(),
             format!("{}", subscription)
+        );
+    }
+
+    #[test]
+    fn display_upload_subscription_changes_response() {
+        let update_urls = vec![(
+            Url::parse("http://feeds2.feedburner.com/LinuxOutlaws?format=xml").unwrap(),
+            Url::parse("http://feeds.feedburner.com/LinuxOutlaws").unwrap(),
+        )];
+        let upload_response = UploadSubscriptionChangesResponse {
+            timestamp: 100,
+            update_urls: update_urls.clone(),
+        };
+
+        assert_eq!(
+            format!("100: {:?}", update_urls),
+            format!("{}", upload_response)
+        );
+    }
+
+    #[test]
+    fn display_get_subscription_changes_response() {
+        let add = vec![
+            Url::parse("http://example.com/feed.rss").unwrap(),
+            Url::parse("http://example.org/podcast.php").unwrap(),
+        ];
+        let remove = vec![Url::parse("http://example.net/foo.xml").unwrap()];
+        let get_response = GetSubscriptionChangesResponse {
+            timestamp: 100,
+            add: add.clone(),
+            remove: remove.clone(),
+        };
+        assert_eq!(
+            format!("100: add{:?}, remove{:?}", add, remove),
+            format!("{}", get_response)
         );
     }
 }
