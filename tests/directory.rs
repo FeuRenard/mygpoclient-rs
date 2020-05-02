@@ -4,6 +4,7 @@ use std::env;
 use url::Url;
 
 use mygpoclient::client::DeviceClient;
+use mygpoclient::directory::RetrieveEpisodeData;
 use mygpoclient::directory::RetrievePodcastData;
 use mygpoclient::directory::RetrievePodcastsForTag;
 use mygpoclient::directory::RetrieveTopTags;
@@ -34,6 +35,19 @@ fn test_retrieve_podcast_data_device_client() -> Result<(), Error> {
     let client = get_device_client();
     let url = Url::parse("http://feeds.feedburner.com/coverville").unwrap();
     client.retrieve_podcast_data(url)?;
+
+    Ok(())
+}
+
+#[test]
+fn test_retrieve_episode_data_device_client() -> Result<(), Error> {
+    let client = get_device_client();
+    let url = Url::parse(
+        "https://www.podtrac.com/pts/redirect.mp3/audio.wnyc.org/otm/otm011520_podextra.mp3",
+    )
+    .unwrap();
+    let podcast = Url::parse("http://feeds.wnyc.org/onthemedia?format=xml").unwrap();
+    client.retrieve_episode_data(url, podcast)?;
 
     Ok(())
 }
