@@ -36,5 +36,6 @@ pub mod device;
 pub mod directory;
 pub mod episode;
 pub mod error;
+pub mod settings;
 pub mod subscription;
 pub mod suggestion;
