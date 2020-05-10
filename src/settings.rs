@@ -3,32 +3,9 @@
 use crate::client::AuthenticatedClient;
 use crate::client::DeviceClient;
 use crate::error::Error;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::collections::HashMap;
 use url::Url;
-
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Ord, PartialOrd, Hash)]
-pub(crate) enum SettingsScope {
-    /// user account
-    Account,
-    /// user device
-    Device {
-        /// device id
-        id: String,
-    },
-    /// podcast feed
-    Podcast {
-        /// feed url
-        url: Url,
-    },
-    /// podcast episode
-    Episode {
-        /// media url
-        url: Url,
-        /// feed url
-        feed_url: Url,
-    },
-}
 
 #[derive(Serialize)]
 pub(crate) struct SaveSettingsRequest {
@@ -150,6 +127,46 @@ pub trait SavePodcastSettings {
     ) -> Result<HashMap<String, String>, Error>;
 }
 
+/// see [`save_episode_settings`](./trait.SaveEpisodeSettings.html#tymethod.save_episode_settings)
+pub trait SaveEpisodeSettings {
+    /// Save Podcast Settings
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use mygpoclient::client::AuthenticatedClient;
+    /// use mygpoclient::settings::SaveEpisodeSettings;
+    /// use std::collections::HashMap;
+    /// use url::Url;
+    ///
+    /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
+    /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
+    /// #
+    /// let client = AuthenticatedClient::new(&username, &password);
+    /// let mut set = HashMap::new();
+    /// set.insert(String::from("setting1"), String::from("value1"));
+    /// set.insert(String::from("setting2"), String::from("value2"));
+    /// let remove = vec![String::from("setting3"), String::from("setting4")];
+    ///
+    /// let settings = client.save_episode_settings(set.clone(), remove.clone(), Url::parse("http://example.com/feed1.rss").unwrap(), Url::parse("http://example.com/files/s01e20.mp3").unwrap())?;
+    /// assert!(set.iter().all(|(key, value)| settings.get_key_value(key).unwrap() == (key, value)));
+    /// assert!(remove.iter().all(|key| settings.get(key).is_none()));
+    /// #
+    /// # Ok::<(), mygpoclient::error::Error>(())
+    /// ```
+    ///
+    /// # See also
+    ///
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/settings.html#save-settings)
+    fn save_episode_settings(
+        &self,
+        set: HashMap<String, String>,
+        remove: Vec<String>,
+        podcast: Url,
+        episode: Url,
+    ) -> Result<HashMap<String, String>, Error>;
+}
+
 impl SaveAccountSettings for AuthenticatedClient {
     fn save_account_settings(
         &self,
@@ -226,5 +243,42 @@ impl SavePodcastSettings for DeviceClient {
     ) -> Result<HashMap<String, String>, Error> {
         self.authenticated_client
             .save_podcast_settings(set, remove, podcast)
+    }
+}
+
+impl SaveEpisodeSettings for AuthenticatedClient {
+    fn save_episode_settings(
+        &self,
+        set: HashMap<String, String>,
+        remove: Vec<String>,
+        podcast: Url,
+        episode: Url,
+    ) -> Result<HashMap<String, String>, Error> {
+        Ok(self
+            .post_with_query(
+                &format!(
+                    "https://gpodder.net/api/2/settings/{}/episode.json",
+                    self.username
+                ),
+                &SaveSettingsRequest { set, remove },
+                &[
+                    &("podcast", podcast.as_str()),
+                    &("episode", episode.as_str()),
+                ],
+            )?
+            .json()?)
+    }
+}
+
+impl SaveEpisodeSettings for DeviceClient {
+    fn save_episode_settings(
+        &self,
+        set: HashMap<String, String>,
+        remove: Vec<String>,
+        podcast: Url,
+        episode: Url,
+    ) -> Result<HashMap<String, String>, Error> {
+        self.authenticated_client
+            .save_episode_settings(set, remove, podcast, episode)
     }
 }
