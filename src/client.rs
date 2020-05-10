@@ -111,6 +111,16 @@ impl AuthenticatedClient {
         url: U,
         json: &T,
     ) -> Result<Response, reqwest::Error> {
+        let empty_slice: &[&String] = &[];
+        self.post_with_query(url, json, empty_slice)
+    }
+
+    pub(crate) fn post_with_query<T: Serialize + ?Sized, V: Serialize + ?Sized, U: IntoUrl>(
+        &self,
+        url: U,
+        json: &T,
+        query_parameters: &[&V],
+    ) -> Result<Response, reqwest::Error> {
         self.public_client
             .client
             .post(url)
@@ -119,6 +129,7 @@ impl AuthenticatedClient {
                 reqwest::header::USER_AGENT,
                 &format!("{}/{}", PACKAGE_NAME, PACKAGE_VERSION),
             )
+            .query(query_parameters)
             .json(json)
             .send()
     }
@@ -160,6 +171,16 @@ impl DeviceClient {
         json: &T,
     ) -> Result<Response, reqwest::Error> {
         self.authenticated_client.post(url, json)
+    }
+
+    pub(crate) fn post_with_query<T: Serialize + ?Sized, V: Serialize + ?Sized, U: IntoUrl>(
+        &self,
+        url: U,
+        json: &T,
+        query_parameters: &[&V],
+    ) -> Result<Response, reqwest::Error> {
+        self.authenticated_client
+            .post_with_query(url, json, query_parameters)
     }
 }
 
