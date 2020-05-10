@@ -111,6 +111,45 @@ pub trait SaveDeviceSettings {
     ) -> Result<HashMap<String, String>, Error>;
 }
 
+/// see [`save_podcast_settings`](./trait.SavePodcastSettings.html#tymethod.save_podcast_settings)
+pub trait SavePodcastSettings {
+    /// Save Podcast Settings
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use mygpoclient::client::AuthenticatedClient;
+    /// use mygpoclient::settings::SavePodcastSettings;
+    /// use std::collections::HashMap;
+    /// use url::Url;
+    ///
+    /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
+    /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
+    /// #
+    /// let client = AuthenticatedClient::new(&username, &password);
+    /// let mut set = HashMap::new();
+    /// set.insert(String::from("setting1"), String::from("value1"));
+    /// set.insert(String::from("setting2"), String::from("value2"));
+    /// let remove = vec![String::from("setting3"), String::from("setting4")];
+    ///
+    /// let settings = client.save_podcast_settings(set.clone(), remove.clone(), Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap())?;
+    /// assert!(set.iter().all(|(key, value)| settings.get_key_value(key).unwrap() == (key, value)));
+    /// assert!(remove.iter().all(|key| settings.get(key).is_none()));
+    /// #
+    /// # Ok::<(), mygpoclient::error::Error>(())
+    /// ```
+    ///
+    /// # See also
+    ///
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/settings.html#save-settings)
+    fn save_podcast_settings(
+        &self,
+        set: HashMap<String, String>,
+        remove: Vec<String>,
+        podcast: Url,
+    ) -> Result<HashMap<String, String>, Error>;
+}
+
 impl SaveAccountSettings for AuthenticatedClient {
     fn save_account_settings(
         &self,
@@ -155,5 +194,37 @@ impl SaveDeviceSettings for DeviceClient {
                 &[&("device", self.device_id.as_str())],
             )?
             .json()?)
+    }
+}
+
+impl SavePodcastSettings for AuthenticatedClient {
+    fn save_podcast_settings(
+        &self,
+        set: HashMap<String, String>,
+        remove: Vec<String>,
+        podcast: Url,
+    ) -> Result<HashMap<String, String>, Error> {
+        Ok(self
+            .post_with_query(
+                &format!(
+                    "https://gpodder.net/api/2/settings/{}/podcast.json",
+                    self.username
+                ),
+                &SaveSettingsRequest { set, remove },
+                &[&("podcast", podcast.as_str())],
+            )?
+            .json()?)
+    }
+}
+
+impl SavePodcastSettings for DeviceClient {
+    fn save_podcast_settings(
+        &self,
+        set: HashMap<String, String>,
+        remove: Vec<String>,
+        podcast: Url,
+    ) -> Result<HashMap<String, String>, Error> {
+        self.authenticated_client
+            .save_podcast_settings(set, remove, podcast)
     }
 }
