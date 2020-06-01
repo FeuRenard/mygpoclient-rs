@@ -167,6 +167,33 @@ pub trait SaveEpisodeSettings {
     ) -> Result<HashMap<String, String>, Error>;
 }
 
+/// see [`get_account_settings`](./trait.GetAccountSettings.html#tymethod.get_account_settings)
+pub trait GetAccountSettings {
+    /// Save Podcast Settings
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use mygpoclient::client::AuthenticatedClient;
+    /// use mygpoclient::settings::GetAccountSettings;
+    /// use url::Url;
+    ///
+    /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
+    /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
+    /// #
+    /// let client = AuthenticatedClient::new(&username, &password);
+    ///
+    /// let settings = client.get_account_settings()?;
+    /// #
+    /// # Ok::<(), mygpoclient::error::Error>(())
+    /// ```
+    ///
+    /// # See also
+    ///
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/settings.html#get-settings)
+    fn get_account_settings(&self) -> Result<HashMap<String, String>, Error>;
+}
+
 impl SaveAccountSettings for AuthenticatedClient {
     fn save_account_settings(
         &self,
@@ -280,5 +307,22 @@ impl SaveEpisodeSettings for DeviceClient {
     ) -> Result<HashMap<String, String>, Error> {
         self.authenticated_client
             .save_episode_settings(set, remove, podcast, episode)
+    }
+}
+
+impl GetAccountSettings for AuthenticatedClient {
+    fn get_account_settings(&self) -> Result<HashMap<String, String>, Error> {
+        Ok(self
+            .get(&format!(
+                "https://gpodder.net/api/2/settings/{}/account.json",
+                self.username
+            ))?
+            .json()?)
+    }
+}
+
+impl GetAccountSettings for DeviceClient {
+    fn get_account_settings(&self) -> Result<HashMap<String, String>, Error> {
+        self.authenticated_client.get_account_settings()
     }
 }

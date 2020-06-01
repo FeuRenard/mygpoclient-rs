@@ -6,6 +6,7 @@ use url::Url;
 
 use mygpoclient::client::DeviceClient;
 use mygpoclient::error::Error;
+use mygpoclient::settings::GetAccountSettings;
 use mygpoclient::settings::SaveAccountSettings;
 use mygpoclient::settings::SaveEpisodeSettings;
 use mygpoclient::settings::SavePodcastSettings;
@@ -64,6 +65,13 @@ fn test_save_episode_settings_device_client() -> Result<(), Error> {
         .iter()
         .all(|(key, value)| settings.get_key_value(key).unwrap() == (key, value)));
     assert!(remove.iter().all(|key| settings.get(key).is_none()));
+    Ok(())
+}
+
+#[test]
+fn test_get_account_settings_device_client() -> Result<(), Error> {
+    let client = get_device_client();
+    client.get_account_settings()?;
     Ok(())
 }
 
