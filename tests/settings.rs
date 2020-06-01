@@ -7,6 +7,7 @@ use url::Url;
 use mygpoclient::client::DeviceClient;
 use mygpoclient::error::Error;
 use mygpoclient::settings::GetAccountSettings;
+use mygpoclient::settings::GetEpisodeSettings;
 use mygpoclient::settings::GetPodcastSettings;
 use mygpoclient::settings::SaveAccountSettings;
 use mygpoclient::settings::SaveEpisodeSettings;
@@ -79,8 +80,17 @@ fn test_get_account_settings_device_client() -> Result<(), Error> {
 #[test]
 fn test_get_podcast_settings_device_client() -> Result<(), Error> {
     let client = get_device_client();
-
     client.get_podcast_settings(Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap())?;
+    Ok(())
+}
+
+#[test]
+fn test_get_episode_settings_device_client() -> Result<(), Error> {
+    let client = get_device_client();
+    client.get_episode_settings(
+        Url::parse("http://example.com/feed1.rss").unwrap(),
+        Url::parse("http://example.com/files/s01e20.mp3").unwrap(),
+    )?;
     Ok(())
 }
 

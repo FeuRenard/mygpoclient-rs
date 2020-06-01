@@ -247,6 +247,37 @@ pub trait GetPodcastSettings {
     fn get_podcast_settings(&self, podcast: Url) -> Result<HashMap<String, String>, Error>;
 }
 
+/// see [`get_episode_settings`](./trait.GetEpisodeSettings.html#tymethod.get_episode_settings)
+pub trait GetEpisodeSettings {
+    /// Get Episode Settings
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use mygpoclient::client::AuthenticatedClient;
+    /// use mygpoclient::settings::GetEpisodeSettings;
+    /// use url::Url;
+    ///
+    /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
+    /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
+    /// #
+    /// let client = AuthenticatedClient::new(&username, &password);
+    ///
+    /// let settings = client.get_episode_settings(Url::parse("http://example.com/feed1.rss").unwrap(), Url::parse("http://example.com/files/s01e20.mp3").unwrap())?;
+    /// #
+    /// # Ok::<(), mygpoclient::error::Error>(())
+    /// ```
+    ///
+    /// # See also
+    ///
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/settings.html#get-settings)
+    fn get_episode_settings(
+        &self,
+        podcast: Url,
+        episode: Url,
+    ) -> Result<HashMap<String, String>, Error>;
+}
+
 impl SaveAccountSettings for AuthenticatedClient {
     fn save_account_settings(
         &self,
@@ -411,5 +442,37 @@ impl GetPodcastSettings for AuthenticatedClient {
 impl GetPodcastSettings for DeviceClient {
     fn get_podcast_settings(&self, podcast: Url) -> Result<HashMap<String, String>, Error> {
         self.authenticated_client.get_podcast_settings(podcast)
+    }
+}
+
+impl GetEpisodeSettings for AuthenticatedClient {
+    fn get_episode_settings(
+        &self,
+        podcast: Url,
+        episode: Url,
+    ) -> Result<HashMap<String, String>, Error> {
+        Ok(self
+            .get_with_query(
+                &format!(
+                    "https://gpodder.net/api/2/settings/{}/episode.json",
+                    self.username
+                ),
+                &[
+                    &("podcast", podcast.as_str()),
+                    &("episode", episode.as_str()),
+                ],
+            )?
+            .json()?)
+    }
+}
+
+impl GetEpisodeSettings for DeviceClient {
+    fn get_episode_settings(
+        &self,
+        podcast: Url,
+        episode: Url,
+    ) -> Result<HashMap<String, String>, Error> {
+        self.authenticated_client
+            .get_episode_settings(podcast, episode)
     }
 }
