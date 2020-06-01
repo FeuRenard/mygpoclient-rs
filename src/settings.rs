@@ -176,7 +176,6 @@ pub trait GetAccountSettings {
     /// ```
     /// use mygpoclient::client::AuthenticatedClient;
     /// use mygpoclient::settings::GetAccountSettings;
-    /// use url::Url;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
@@ -203,7 +202,6 @@ pub trait GetDeviceSettings {
     /// ```
     /// use mygpoclient::client::DeviceClient;
     /// use mygpoclient::settings::GetDeviceSettings;
-    /// use url::Url;
     ///
     /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
     /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
@@ -220,6 +218,33 @@ pub trait GetDeviceSettings {
     ///
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/settings.html#get-settings)
     fn get_device_settings(&self) -> Result<HashMap<String, String>, Error>;
+}
+
+/// see [`get_podcast_settings`](./trait.GetPodcastSettings.html#tymethod.get_podcast_settings)
+pub trait GetPodcastSettings {
+    /// Get Podcast Settings
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use mygpoclient::client::AuthenticatedClient;
+    /// use mygpoclient::settings::GetPodcastSettings;
+    /// use url::Url;
+    ///
+    /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
+    /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
+    /// #
+    /// let client = AuthenticatedClient::new(&username, &password);
+    ///
+    /// let settings = client.get_podcast_settings(Url::parse("http://goinglinux.com/mp3podcast.xml").unwrap())?;
+    /// #
+    /// # Ok::<(), mygpoclient::error::Error>(())
+    /// ```
+    ///
+    /// # See also
+    ///
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/settings.html#get-settings)
+    fn get_podcast_settings(&self, podcast: Url) -> Result<HashMap<String, String>, Error>;
 }
 
 impl SaveAccountSettings for AuthenticatedClient {
@@ -366,5 +391,25 @@ impl GetDeviceSettings for DeviceClient {
                 &[&("device", self.device_id.as_str())],
             )?
             .json()?)
+    }
+}
+
+impl GetPodcastSettings for AuthenticatedClient {
+    fn get_podcast_settings(&self, podcast: Url) -> Result<HashMap<String, String>, Error> {
+        Ok(self
+            .get_with_query(
+                &format!(
+                    "https://gpodder.net/api/2/settings/{}/podcast.json",
+                    self.username
+                ),
+                &[&("podcast", podcast.as_str())],
+            )?
+            .json()?)
+    }
+}
+
+impl GetPodcastSettings for DeviceClient {
+    fn get_podcast_settings(&self, podcast: Url) -> Result<HashMap<String, String>, Error> {
+        self.authenticated_client.get_podcast_settings(podcast)
     }
 }
