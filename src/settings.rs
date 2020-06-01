@@ -169,7 +169,7 @@ pub trait SaveEpisodeSettings {
 
 /// see [`get_account_settings`](./trait.GetAccountSettings.html#tymethod.get_account_settings)
 pub trait GetAccountSettings {
-    /// Save Podcast Settings
+    /// Get Account Settings
     ///
     /// # Examples
     ///
@@ -192,6 +192,34 @@ pub trait GetAccountSettings {
     ///
     /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/settings.html#get-settings)
     fn get_account_settings(&self) -> Result<HashMap<String, String>, Error>;
+}
+
+/// see [`get_device_settings`](./trait.GetDeviceSettings.html#tymethod.get_device_settings)
+pub trait GetDeviceSettings {
+    /// Get Device Settings
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use mygpoclient::client::DeviceClient;
+    /// use mygpoclient::settings::GetDeviceSettings;
+    /// use url::Url;
+    ///
+    /// # let username = std::env::var("GPODDER_NET_USERNAME").unwrap();
+    /// # let password = std::env::var("GPODDER_NET_PASSWORD").unwrap();
+    /// # let deviceid = std::env::var("GPODDER_NET_DEVICEID").unwrap();
+    /// #
+    /// let client = DeviceClient::new(&username, &password, &deviceid);
+    ///
+    /// let settings = client.get_device_settings()?;
+    /// #
+    /// # Ok::<(), mygpoclient::error::Error>(())
+    /// ```
+    ///
+    /// # See also
+    ///
+    /// - [gpodder.net API Documentation](https://gpoddernet.readthedocs.io/en/latest/api/reference/settings.html#get-settings)
+    fn get_device_settings(&self) -> Result<HashMap<String, String>, Error>;
 }
 
 impl SaveAccountSettings for AuthenticatedClient {
@@ -324,5 +352,19 @@ impl GetAccountSettings for AuthenticatedClient {
 impl GetAccountSettings for DeviceClient {
     fn get_account_settings(&self) -> Result<HashMap<String, String>, Error> {
         self.authenticated_client.get_account_settings()
+    }
+}
+
+impl GetDeviceSettings for DeviceClient {
+    fn get_device_settings(&self) -> Result<HashMap<String, String>, Error> {
+        Ok(self
+            .get_with_query(
+                &format!(
+                    "https://gpodder.net/api/2/settings/{}/device.json",
+                    self.authenticated_client.username
+                ),
+                &[&("device", self.device_id.as_str())],
+            )?
+            .json()?)
     }
 }
