@@ -1,6 +1,6 @@
 [package]
 name = "mygpoclient"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["FeuRenard <feurenard@posteo.de>"]
 edition = "2018"
 description = "Client library for gpodder.net API"
