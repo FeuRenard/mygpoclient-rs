@@ -1,10 +1,10 @@
 //! [Device API](https://gpoddernet.readthedocs.io/en/latest/api/reference/devices.html)
 
 use crate::client::{AuthenticatedClient, DeviceClient};
+use crate::directory::Episode;
 use crate::episode::EpisodeActionType;
 use crate::error::Error;
 use crate::subscription::Podcast;
-use chrono::naive::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::fmt;
@@ -55,22 +55,9 @@ pub(crate) struct DeviceData {
 /// episode update information as used in [DeviceUpdates](./struct.DeviceUpdates.html)
 #[derive(Serialize, Deserialize)]
 pub struct EpisodeUpdate {
-    /// episode title
-    pub title: String,
-    /// episode URL
-    pub url: Url,
-    /// podcast title
-    pub podcast_title: String,
-    /// podcast URL
-    pub podcast_url: Url,
-    /// episode description
-    pub description: String,
-    /// episode website
-    pub website: Url,
-    /// gpodder.net internal URL
-    pub mygpo_link: Url,
-    /// episode release date
-    pub released: NaiveDateTime,
+    /// episode
+    #[serde(flatten)]
+    pub episode: Episode,
     /// latest episode action reported for this episode
     pub status: Option<EpisodeActionType>,
 }
