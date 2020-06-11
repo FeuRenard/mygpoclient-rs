@@ -21,7 +21,7 @@ Rust client library for [gpodder.net](https://gpodder.net/)
 - [x] [Episode Actions](https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html)
 - [ ] [Podcast Lists](https://gpoddernet.readthedocs.io/en/latest/api/reference/podcastlists.html)
 - [x] [Settings](https://gpoddernet.readthedocs.io/en/latest/api/reference/settings.html)
-- [ ] [Favorites](https://gpoddernet.readthedocs.io/en/latest/api/reference/favorites.html)
+- [x] [Favorites](https://gpoddernet.readthedocs.io/en/latest/api/reference/favorites.html)
 - [ ] [Device Synchronization](https://gpoddernet.readthedocs.io/en/latest/api/reference/sync.html)
 - [ ] [Client Parametrization](https://gpoddernet.readthedocs.io/en/latest/api/reference/clientconfig.html)
 
