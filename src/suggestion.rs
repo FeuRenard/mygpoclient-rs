@@ -9,7 +9,7 @@ use std::fmt;
 use std::hash::{Hash, Hasher};
 use url::Url;
 
-/// A podcast suggestion as returned by [`retrieve_suggested_podcasts`](/trait.RetrieveSuggestedPodcasts.html#tymethod.retrieve_suggested_podcasts)
+/// A podcast suggestion as returned by [retrieve_suggested_podcasts](RetrieveSuggestedPodcasts::retrieve_suggested_podcasts)
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Suggestion {
     /// website of podcast
@@ -30,7 +30,7 @@ pub struct Suggestion {
     pub logo_url: Option<Url>,
 }
 
-/// see [`retrieve_suggested_podcasts`](./trait.RetrieveSuggestedPodcasts.html#tymethod.retrieve_suggested_podcasts)
+/// see [retrieve_suggested_podcasts](RetrieveSuggestedPodcasts::retrieve_suggested_podcasts)
 pub trait RetrieveSuggestedPodcasts {
     /// Retrieve Suggested Podcasts
     ///

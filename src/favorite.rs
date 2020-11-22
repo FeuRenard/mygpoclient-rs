@@ -5,7 +5,7 @@ use crate::client::DeviceClient;
 use crate::directory::Episode;
 use crate::error::Error;
 
-/// see [`get_favorite_episodes`](./trait.GetFavoriteEpisodes.html#tymethod.get_favorite_episodes)
+/// see [get_favorite_episodes](GetFavoriteEpisodes::get_favorite_episodes)
 pub trait GetFavoriteEpisodes {
     /// Get Favorite Episodes
     ///

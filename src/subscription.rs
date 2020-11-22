@@ -40,7 +40,7 @@ pub(crate) struct UploadSubscriptionChangesRequest {
     pub(crate) remove: Vec<Url>,
 }
 
-/// Response to [`upload_subscription_changes`](./trait.SubscriptionChanges.html#tymethod.upload_subscription_changes)
+/// Response to [upload_subscription_changes](SubscriptionChanges::upload_subscription_changes)
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub struct UploadSubscriptionChangesResponse {
     /// timestamp/ID that can be used for requesting changes since this upload in a subsequent API call
@@ -51,7 +51,7 @@ pub struct UploadSubscriptionChangesResponse {
     pub update_urls: Vec<(Url, Url)>,
 }
 
-/// Response to [`get_subscription_changes`](/trait.SubscriptionChanges.html#tymethod.get_subscription_changes)
+/// Response to [get_subscription_changes](SubscriptionChanges::get_subscription_changes)
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub struct GetSubscriptionChangesResponse {
     /// The timestamp SHOULD be stored by the client in order to provide it in the since parameter in the next request.
@@ -62,7 +62,7 @@ pub struct GetSubscriptionChangesResponse {
     pub remove: Vec<Url>,
 }
 
-/// see [`get_all_subscriptions`](./trait.GetAllSubscriptions.html#tymethod.get_all_subscriptions)
+/// see [get_all_subscriptions](GetAllSubscriptions::get_all_subscriptions)
 pub trait GetAllSubscriptions {
     /// Get All Subscriptions
     ///

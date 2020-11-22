@@ -21,7 +21,7 @@ pub struct AuthenticatedClient {
     pub(crate) public_client: PublicClient,
 }
 
-/// Device-specific [`AuthenticatedClient`](./struct.AuthenticatedClient.html)
+/// Device-specific [AuthenticatedClient]
 #[derive(Debug, Clone)]
 pub struct DeviceClient {
     pub(crate) device_id: String,
@@ -29,7 +29,7 @@ pub struct DeviceClient {
 }
 
 impl PublicClient {
-    /// Create [`PublicClient`](./struct.PublicClient.html) locally
+    /// Create [PublicClient] locally
     pub fn new() -> PublicClient {
         PublicClient {
             client: Default::default(),
@@ -58,7 +58,7 @@ impl PublicClient {
 }
 
 impl AuthenticatedClient {
-    /// Create [`AuthenticatedClient`](./struct.AuthenticatedClient.html) locally
+    /// Create [AuthenticatedClient] locally
     pub fn new(username: &str, password: &str) -> AuthenticatedClient {
         AuthenticatedClient {
             username: username.to_owned(),
@@ -136,7 +136,7 @@ impl AuthenticatedClient {
 }
 
 impl DeviceClient {
-    /// Create [`DeviceClient`](./struct.DeviceClient.html)
+    /// Create [DeviceClient]
     pub fn new(username: &str, password: &str, device_id: &str) -> DeviceClient {
         DeviceClient {
             device_id: device_id.to_owned(),

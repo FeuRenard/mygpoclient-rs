@@ -14,7 +14,7 @@ use serde::Deserialize;
 use serde::Serialize;
 use url::Url;
 
-/// Type of an [EpisodeAction](./struct.EpisodeAction.html)
+/// Type of an [EpisodeAction]
 ///
 /// [gpodder.net API Documentation]: https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html#episode-action-types
 #[serde(rename_all = "lowercase", tag = "action")]
@@ -60,7 +60,7 @@ pub struct EpisodeAction {
 }
 
 // TODO see UploadSubscriptionChangesResponse
-/// Response to [`upload_episode_actions`](./trait.UploadEpisodeActions.html#tymethod.upload_episode_actions)
+/// Response to [upload_episode_actions](UploadEpisodeActions::upload_episode_actions)
 ///
 /// [gpodder.net API Documentation]: https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html#upload-episode-actions
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
@@ -73,7 +73,7 @@ pub struct UploadEpisodeActionsResponse {
     pub update_urls: Vec<(Url, Url)>,
 }
 
-/// Response to [`get_episode_actions`](./trait.GetEpisodeActions.html#tymethod.get_episode_actions)
+/// Response to [get_episode_actions](GetEpisodeActions::get_episode_actions)
 ///
 /// [gpodder.net API Documentation]: https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html#get-episode-actions
 #[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, Eq, Ord, PartialOrd, Hash)]
@@ -84,7 +84,7 @@ pub struct GetEpisodeActionsResponse {
     pub timestamp: u64,
 }
 
-/// see [`upload_episode_actions`](./trait.UploadEpisodeActions.html#tymethod.upload_episode_actions)
+/// see [upload_episode_actions](UploadEpisodeActions::upload_episode_actions)
 pub trait UploadEpisodeActions {
     /// Upload changed episode actions.
     ///
@@ -124,7 +124,7 @@ pub trait UploadEpisodeActions {
 }
 
 // TODO use Date(time?) instead of timestamps as integers
-/// see [`get_episode_actions`](./trait.GetEpisodeActions.html#tymethod.get_episode_actions)
+/// see [get_episode_actions](GetEpisodeActions::get_episode_actions)
 pub trait GetEpisodeActions {
     /// Get changed episode actions
     ///
@@ -179,7 +179,7 @@ impl EpisodeAction {
         }
     }
 
-    /// Create new [`Download`](./enum.EpisodeActionType.html#variant.Download) event, so that other clients know where a file has already been downloaded.
+    /// Create new [Download](EpisodeActionType::Download) event, so that other clients know where a file has already been downloaded.
     pub fn new_download(
         podcast: Url,
         episode: Url,
@@ -188,7 +188,7 @@ impl EpisodeAction {
         Self::new(podcast, episode, timestamp, EpisodeActionType::Download)
     }
 
-    /// Create new [`Delete`](./enum.EpisodeActionType.html#variant.Delete) event so that other clients know where a previously downloaded file has been deleted.
+    /// Create new [Delete](EpisodeActionType::Delete) event so that other clients know where a previously downloaded file has been deleted.
     pub fn new_delete(
         podcast: Url,
         episode: Url,
@@ -197,12 +197,12 @@ impl EpisodeAction {
         Self::new(podcast, episode, timestamp, EpisodeActionType::Delete)
     }
 
-    /// Create new [`New`](./enum.EpisodeActionType.html#variant.New) event, to reset previous events. This state needs to be interpreted by receiving clients and does not delete any information on the webservice.
+    /// Create new [New](EpisodeActionType::New) event, to reset previous events. This state needs to be interpreted by receiving clients and does not delete any information on the webservice.
     pub fn new_new(podcast: Url, episode: Url, timestamp: Option<NaiveDateTime>) -> EpisodeAction {
         Self::new(podcast, episode, timestamp, EpisodeActionType::New)
     }
 
-    /// Create new [`Play`](./enum.EpisodeActionType.html#variant.Play) event with [`position`](./enum.EpisodeActionType.html#variant.Play.field.position) information (in seconds) so that other clients know where to start playback.
+    /// Create new [Play](EpisodeActionType::Play) event with [`position`](EpisodeActionType::Play::position) information (in seconds) so that other clients know where to start playback.
     pub fn new_play_stop(
         podcast: Url,
         episode: Url,
@@ -222,7 +222,7 @@ impl EpisodeAction {
         }
     }
 
-    /// Create new [`Play`](./enum.EpisodeActionType.html#variant.Play) event with [`position`](./enum.EpisodeActionType.html#variant.Play.field.position), [`started`](./enum.EpisodeActionType.html#variant.Play.field.started) and [`total`](./enum.EpisodeActionType.html#variant.Play.field.total) information (in seconds) so that other clients know where to start playback.
+    /// Create new [Play](EpisodeActionType::Play) event with [position](EpisodeActionType::Play::position), [started](EpisodeActionType::Play::started) and [total](EpisodeActionType::Play::total) information (in seconds) so that other clients know where to start playback.
     pub fn new_play(
         podcast: Url,
         episode: Url,

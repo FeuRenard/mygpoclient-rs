@@ -13,7 +13,7 @@ pub(crate) struct SaveSettingsRequest {
     pub(crate) remove: Vec<String>,
 }
 
-/// see [`save_account_settings`](./trait.SaveAccountSettings.html#tymethod.save_account_settings)
+/// see [save_account_settings](SaveAccountSettings::save_account_settings)
 pub trait SaveAccountSettings {
     /// Save Account Settings
     ///
@@ -50,7 +50,7 @@ pub trait SaveAccountSettings {
     ) -> Result<HashMap<String, String>, Error>;
 }
 
-/// see [`save_device_settings`](./trait.SaveDeviceSettings.html#tymethod.save_device_settings)
+/// see [save_device_settings](SaveDeviceSettings::save_device_settings)
 pub trait SaveDeviceSettings {
     /// Save Device Settings
     ///
@@ -88,7 +88,7 @@ pub trait SaveDeviceSettings {
     ) -> Result<HashMap<String, String>, Error>;
 }
 
-/// see [`save_podcast_settings`](./trait.SavePodcastSettings.html#tymethod.save_podcast_settings)
+/// see [save_podcast_settings](SavePodcastSettings::save_podcast_settings)
 pub trait SavePodcastSettings {
     /// Save Podcast Settings
     ///
@@ -127,7 +127,7 @@ pub trait SavePodcastSettings {
     ) -> Result<HashMap<String, String>, Error>;
 }
 
-/// see [`save_episode_settings`](./trait.SaveEpisodeSettings.html#tymethod.save_episode_settings)
+/// see [save_episode_settings](SaveEpisodeSettings::save_episode_settings)
 pub trait SaveEpisodeSettings {
     /// Save Podcast Settings
     ///
@@ -167,7 +167,7 @@ pub trait SaveEpisodeSettings {
     ) -> Result<HashMap<String, String>, Error>;
 }
 
-/// see [`get_account_settings`](./trait.GetAccountSettings.html#tymethod.get_account_settings)
+/// see [get_account_settings](GetAccountSettings::get_account_settings)
 pub trait GetAccountSettings {
     /// Get Account Settings
     ///
@@ -193,7 +193,7 @@ pub trait GetAccountSettings {
     fn get_account_settings(&self) -> Result<HashMap<String, String>, Error>;
 }
 
-/// see [`get_device_settings`](./trait.GetDeviceSettings.html#tymethod.get_device_settings)
+/// see [get_device_settings](GetDeviceSettings::get_device_settings)
 pub trait GetDeviceSettings {
     /// Get Device Settings
     ///
@@ -220,7 +220,7 @@ pub trait GetDeviceSettings {
     fn get_device_settings(&self) -> Result<HashMap<String, String>, Error>;
 }
 
-/// see [`get_podcast_settings`](./trait.GetPodcastSettings.html#tymethod.get_podcast_settings)
+/// see [get_podcast_settings](GetPodcastSettings::get_podcast_settings)
 pub trait GetPodcastSettings {
     /// Get Podcast Settings
     ///
@@ -247,7 +247,7 @@ pub trait GetPodcastSettings {
     fn get_podcast_settings(&self, podcast: Url) -> Result<HashMap<String, String>, Error>;
 }
 
-/// see [`get_episode_settings`](./trait.GetEpisodeSettings.html#tymethod.get_episode_settings)
+/// see [get_episode_settings](GetEpisodeSettings::get_episode_settings)
 pub trait GetEpisodeSettings {
     /// Get Episode Settings
     ///

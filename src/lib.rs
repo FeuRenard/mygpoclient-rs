@@ -2,7 +2,7 @@
 //!
 //! # Usage
 //!
-//! For any request you need a [client](./client/index.html#structs).
+//! For any request you need a [client].
 //!
 //! All supported API features are represented by a trait.
 //!

@@ -43,7 +43,7 @@ pub struct Episode {
     pub released: NaiveDateTime,
 }
 
-/// see [`retrieve_top_tags`](./trait.RetrieveTopTags.html#tymethod.retrieve_top_tags)
+/// see [retrieve_top_tags](RetrieveTopTags::retrieve_top_tags)
 pub trait RetrieveTopTags {
     /// Retrieve Top Tags
     ///
@@ -69,7 +69,7 @@ pub trait RetrieveTopTags {
     fn retrieve_top_tags(&self, count: u8) -> Result<Vec<Tag>, Error>;
 }
 
-/// see [`retrieve_podcasts_for_tag`](./trait.RetrievePodcastsForTag.html#tymethod.retrieve_podcasts_for_tag)
+/// see [retrieve_podcasts_for_tag](RetrievePodcastsForTag::retrieve_podcasts_for_tag)
 pub trait RetrievePodcastsForTag {
     /// Retrieve Podcasts for Tag
     ///
@@ -97,7 +97,7 @@ pub trait RetrievePodcastsForTag {
     fn retrieve_podcasts_for_tag(&self, tag: &str, count: u8) -> Result<Vec<Podcast>, Error>;
 }
 
-/// see [`retrieve_podcast_data`](./trait.RetrievePodcastData.html#tymethod.retrieve_podcast_data)
+/// see [retrieve_podcast_data](RetrievePodcastData::retrieve_podcast_data)
 pub trait RetrievePodcastData {
     /// Returns information for the podcast with the given URL or Error if there is no podcast with this URL.
     ///
@@ -124,7 +124,7 @@ pub trait RetrievePodcastData {
     fn retrieve_podcast_data(&self, url: Url) -> Result<Podcast, Error>;
 }
 
-/// see [`retrieve_episode_data`](./trait.RetrieveEpisodeData.html#tymethod.retrieve_episode_data)
+/// see [retrieve_episode_data](RetrieveEpisodeData::retrieve_episode_data)
 pub trait RetrieveEpisodeData {
     /// Returns information for the episode with the given url that belongs to the given podcast
     ///
@@ -153,7 +153,7 @@ pub trait RetrieveEpisodeData {
     fn retrieve_episode_data(&self, podcast: Url, url: Url) -> Result<Episode, Error>;
 }
 
-/// see [`podcast_toplist`](./trait.PodcastToplist.html#tymethod.podcast_toplist)
+/// see [podcast_toplist](PodcastToplist::podcast_toplist)
 pub trait PodcastToplist {
     /// Returns list of top podcasts
     ///
@@ -181,7 +181,7 @@ pub trait PodcastToplist {
     fn podcast_toplist(&self, number: u8, scale_logo: Option<u16>) -> Result<Vec<Podcast>, Error>;
 }
 
-/// see [`podcast_search`](./trait.PodcastSearch.html#tymethod.podcast_search)
+/// see [podcast_search](PodcastSearch::podcast_search)
 pub trait PodcastSearch {
     /// Carries out a service-wide search for podcasts that match the given query. Returns a list of podcasts.
     ///

@@ -11,7 +11,7 @@ use std::fmt;
 use std::hash::{Hash, Hasher};
 use url::Url;
 
-/// Type of the [`Device`](./struct.Device.html)
+/// Type of the [Device]
 #[serde(rename_all = "lowercase")]
 #[derive(Deserialize, Serialize, Debug, Clone, Copy, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum DeviceType {
@@ -52,7 +52,7 @@ pub(crate) struct DeviceData {
     pub(crate) device_type: Option<DeviceType>,
 }
 
-/// episode update information as used in [DeviceUpdates](./struct.DeviceUpdates.html)
+/// episode update information as used in [DeviceUpdates]
 #[derive(Serialize, Deserialize)]
 pub struct EpisodeUpdate {
     /// episode
@@ -62,7 +62,7 @@ pub struct EpisodeUpdate {
     pub status: Option<EpisodeActionType>,
 }
 
-/// updated information for a device as returned by [`get_device_updates`](./trait.GetDeviceUpdates.html#tymethod.get_device_updates)
+/// updated information for a device as returned by [get_device_updates](GetDeviceUpdates::get_device_updates)
 #[derive(Serialize, Deserialize)]
 pub struct DeviceUpdates {
     /// list of subscriptions to be added
@@ -75,14 +75,14 @@ pub struct DeviceUpdates {
     pub timestamp: u64,
 }
 
-/// see [`update_device_data`](./trait.UpdateDeviceData.html#tymethod.update_device_data)
+/// see [update_device_data](UpdateDeviceData::update_device_data)
 pub trait UpdateDeviceData {
     /// Update Device Data
     ///
     /// # Parameters
     ///
     /// - `caption`: The new human readable label for the device
-    /// - `device_type`: see [`DeviceType`](./enum.DeviceType.html)
+    /// - `device_type`: see [DeviceType]
     ///
     /// # Examples
     ///
@@ -110,7 +110,7 @@ pub trait UpdateDeviceData {
     ) -> Result<(), Error>;
 }
 
-/// see [`list_devices`](./trait.ListDevices.html#tymethod.list_devices)
+/// see [list_devices](ListDevices::list_devices)
 pub trait ListDevices {
     /// List Devices
     ///
@@ -138,7 +138,7 @@ pub trait ListDevices {
     fn list_devices(&self) -> Result<Vec<Device>, Error>;
 }
 
-/// see [`get_device_updates`](./trait.GetDeviceUpdates.html#tymethod.get_device_updates)
+/// see [get_device_updates](GetDeviceUpdates::get_device_updates)
 pub trait GetDeviceUpdates {
     /// Get Device Updates
     ///
