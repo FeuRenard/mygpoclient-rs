@@ -8,6 +8,7 @@
 [![Gitmoji](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat)](https://gitmoji.carloscuesta.me)
 [![Crates.io](https://img.shields.io/crates/v/mygpoclient)](https://crates.io/crates/mygpoclient)
 [![Documentation](https://docs.rs/mygpoclient/badge.svg)](https://docs.rs/mygpoclient)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FFeuRenard%2Fmygpoclient-rs.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FFeuRenard%2Fmygpoclient-rs?ref=badge_shield)
 
 Rust client library for [gpodder.net](https://gpodder.net/)
 
@@ -41,3 +42,7 @@ The tests have to run consecutively because they share state on the gpodder.net 
 ## Install git hooks
 * commit-msg: Run `ln -s ../../commit-msg.sh .git/hooks/commit-msg && chmod +x commit-msg.sh`
 * pre-commit: Run `ln -s ../../pre-commit.sh .git/hooks/pre-commit && chmod +x pre-commit.sh`
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FFeuRenard%2Fmygpoclient-rs.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FFeuRenard%2Fmygpoclient-rs?ref=badge_large)
